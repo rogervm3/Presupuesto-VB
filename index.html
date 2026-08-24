@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Presupuesto · Roger & Marcela</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{
+  --bg:#EEF1F3; --surface:#fff; --ink:#16323F; --ink2:#4A5560; --line:#DCE3E7;
+  --teal:#0E7C86; --tealSoft:#E3F1F2; --green:#2F9E6B; --greenSoft:#E4F3EC;
+  --coral:#E4572E; --coralSoft:#FBE7DF; --amber:#C98A16; --amberSoft:#FBF0D9; --muted:#8A97A0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.num{font-family:'Space Grotesk',Inter,sans-serif;font-feature-settings:'tnum'}
+.app{display:flex;min-height:100vh}
+aside{width:210px;background:var(--ink);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:9px;padding:0 8px 22px}
+.logo{width:30px;height:30px;border-radius:9px;background:var(--teal);display:grid;place-items:center;font-size:16px}
+.navbtn{width:100%;text-align:left;background:transparent;color:rgba(255,255,255,.72);border:none;border-radius:10px;padding:11px 12px;margin-bottom:4px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.navbtn.active{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
+main{flex:1;padding:26px clamp(16px,3vw,38px);max-width:1180px;margin:0 auto;width:100%}
+.head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.eyebrow{font-size:13px;letter-spacing:1px;color:var(--teal);text-transform:uppercase;font-weight:600}
+.title{font-size:26px;font-weight:700;margin-top:2px}
+select,input{font-family:inherit}
+.msel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-weight:600;color:var(--ink);cursor:pointer}
+.curtog{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.curtog button{border:none;background:transparent;padding:10px 13px;font-weight:700;cursor:pointer;color:var(--ink2);font-size:13px;font-family:'Space Grotesk',Inter,sans-serif}
+.curtog button.on{background:var(--teal);color:#fff}
+.btn{border:none;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:14px}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--ink2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.lift{transition:transform .12s,box-shadow .12s}.lift:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(22,50,63,.10)}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.kpi-l{font-size:12.5px;color:var(--ink2);font-weight:600}
+.kpi-v{font-size:25px;font-weight:700;margin-top:8px}
+.kpi-s{font-size:11.5px;color:var(--muted);margin-top:3px}
+.bar{height:7px;background:var(--bg);border-radius:999px;overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:999px}
+.tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.rowh{border-radius:8px}.rowh:hover{background:var(--bg)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:10px 14px;font-weight:600;color:var(--ink2);text-align:left;background:var(--bg);white-space:nowrap}
+td{padding:9px 14px;border-top:1px solid var(--line)}
+.muted{color:var(--muted)}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.catcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px;cursor:pointer}
+.foot{margin-top:28px;border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--muted)}
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(22,50,63,.42);display:grid;place-items:center;padding:16px;z-index:50}
+.modal{background:var(--surface);border-radius:18px;width:min(560px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(22,50,63,.28)}
+.modal.wide{width:min(760px,96%)}
+.mhead{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:16px}
+.mbody{padding:22px;overflow-y:auto;display:grid;gap:14px}
+.mfoot{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+label.f{font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:5px;display:block}
+.field{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;width:100%;outline:none;background:#fff}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px}
+.seg{display:flex;gap:8px;background:var(--bg);padding:4px;border-radius:10px}
+.seg button{flex:1;padding:9px;border-radius:8px;border:none;cursor:pointer;font-weight:600;font-size:13px;background:transparent;color:var(--ink2)}
+.iconbtn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;display:inline-flex}
+.cellsel{border:1px solid transparent;background:transparent;font-family:inherit;font-size:13px;padding:4px 6px;border-radius:8px;cursor:pointer;color:var(--ink2);max-width:180px}
+.cellsel:hover{border-color:var(--line);background:#fff}
+.cellsel:focus{outline:none;border-color:var(--teal);background:#fff}
+.filterrow th{background:#fff;border-top:1px solid var(--line);padding:6px 10px}
+.hfilter{width:100%;max-width:170px;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font-size:12px;background:#fff;color:var(--ink2);cursor:pointer;font-family:inherit}
+.hfilter:focus{outline:none;border-color:var(--teal)}
+.close{background:none;border:none;cursor:pointer;color:var(--muted)}
+@media(max-width:640px){
+  .app{flex-direction:column}
+  aside{width:100%;height:auto;position:static;display:flex;gap:4px;padding:10px;overflow-x:auto}
+  .brand{display:none}.navbtn{white-space:nowrap;margin:0}
+  .two{grid-template-columns:1fr}
+  .kpi-big-row{grid-template-columns:1fr!important}
+  .kpi-stat-grid{grid-template-columns:1fr 1fr!important}
+}
+
+/* header menus */
+.colh{padding:0!important}
+.colh-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;background:none;border:none;padding:10px 14px;cursor:pointer;font-family:inherit;font-weight:600;color:var(--ink2);white-space:nowrap;font-size:13px}
+.colh.rt .colh-btn{flex-direction:row-reverse}
+.colh-btn:hover{background:#e6edf1}
+.colh-ic{color:var(--muted);font-size:10px}
+.colh-ic.on{color:var(--teal)}
+.linkbtn{background:none;border:none;padding:0;cursor:pointer;color:var(--teal);font-weight:600;font-size:12px;font-family:inherit}
+/* popover */
+.popback{position:fixed;inset:0;z-index:60}
+.pop{position:fixed;z-index:61;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(22,50,63,.22);padding:8px;font-size:13px}
+.pop-sort{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.pop-sort button{text-align:left;background:none;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--ink);font-size:13px;font-family:inherit}
+.pop-sort button:hover{background:var(--bg)}
+.pop-search input{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12.5px;outline:none;margin-bottom:6px;font-family:inherit}
+.pop-list{max-height:220px;overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px 0;margin-bottom:6px}
+.pop-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer}
+.pop-item:hover{background:var(--bg)}
+.pop-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pop-all{border-bottom:1px solid var(--line);margin-bottom:2px}
+.pop-foot{display:flex;justify-content:space-between;gap:8px}
+.pop-foot button{border:none;border-radius:8px;padding:7px 10px;font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:600}
+.pop-foot [data-clearcol]{background:none;color:var(--ink2)}
+.pop-foot .pl-primary{background:var(--teal);color:#fff}
+/* summary + category tables */
+.sumt,.catt{width:100%;border-collapse:collapse;font-size:13px}
+.sumt th,.catt th{background:var(--bg);color:var(--ink2);text-align:left;padding:9px 12px;font-weight:600;white-space:nowrap}
+.sumt td,.catt td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:middle}
+.rt{text-align:right}
+.sumt .sum-main td{background:#fff;font-weight:600}
+.sumt .sub-h td{background:var(--bg);font-weight:700;font-size:12px;color:var(--ink2);padding:6px 12px}
+.sumt .sub td{color:var(--ink2);font-size:12.5px}
+.sumt .sum-bal td{background:var(--tealSoft);font-weight:700;border-top:2px solid var(--teal)}
+.exp{background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px;color:var(--ink);padding:0}
+.exp:hover{color:var(--teal)}
+.minput{width:110px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px;text-align:right;outline:none}
+.minput:focus{border-color:var(--teal)}
+.mv-ghead{width:100%;display:flex;align-items:center;gap:10px;background:none;border:none;padding:13px 16px;cursor:pointer;font-family:inherit;font-size:14px}
+.mv-ghead:hover{background:var(--bg)}
+.mv-chead{display:flex;align-items:center;gap:10px;background:var(--bg);padding:7px 16px;font-weight:600;font-size:12.5px;color:var(--ink2);border-top:1px solid var(--line)}
+.mv-row:hover td{background:var(--tealSoft)}
+th.sortable:hover{background:#e6edf1;color:var(--ink)}
+.swrow{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0}
+.swatch.on{border-color:var(--ink);box-shadow:0 0 0 2px #fff inset}
+.imptbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.imptbl th{background:var(--bg);color:var(--ink2);text-align:left;padding:7px 8px;font-weight:600;white-space:nowrap;position:sticky;top:0}
+.imptbl td{padding:5px 8px;border-top:1px solid var(--line);vertical-align:middle}
+.imp-in{width:100%;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:12px;outline:none;font-family:inherit;background:#fff}
+.imp-in:focus{border-color:var(--teal)}
+/* period bar */
+.pbar{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px}
+.pbar-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pbar-lbl{font-size:10.5px;font-weight:700;letter-spacing:.5px;color:var(--muted);text-transform:uppercase;margin-right:2px}
+.pchip{border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.pchip:hover{border-color:var(--teal);color:var(--teal)}
+.pchip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.pchip.mchip{padding:6px 10px}
+.pchip.mchip.on{background:var(--teal);border-color:var(--teal)}
+.pchip.avgtog.on{background:var(--amber);border-color:var(--amber)}
+.pbar-sep{width:1px;height:26px;background:var(--line)}
+.pbar-link{background:none;border:none;color:var(--teal);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:0}
+
+.linkcell{background:none;border:none;padding:0;cursor:pointer;color:var(--teal);font-family:inherit;font-weight:600;font-size:13px}
+.linkcell:hover{text-decoration:underline}
+.catt .grp-h td{background:#eef3f6;border-top:2px solid var(--line);padding:9px 12px}
+.grp-h{cursor:default}
+.drag-handle{display:inline-block;cursor:grab;color:var(--muted);font-size:14px;margin-right:8px;padding:2px 4px;border-radius:4px;user-select:none}
+.drag-handle:hover{color:var(--ink2);background:var(--line)}
+.grp-h.dragging{opacity:.4}
+.grp-h.drag-over{box-shadow:inset 0 2px 0 var(--teal),inset 0 -2px 0 var(--teal)}
+.grp-h.drag-over td{background:var(--tealSoft)}
+
+.catt .grp-h .exp{font-size:13.5px}
+.catt .cat-r td{border-top:1px solid #eef1f3}
+.catt .grp-add td{border-top:none;padding:4px 12px 12px 26px}
+
+@media(max-width:640px){
+  main{padding:18px 12px}
+  .title{font-size:20px}
+  .head>div:last-child{width:100%;flex-wrap:wrap}
+  .r2,.r3{grid-template-columns:1fr}
+  .modal{width:100%;max-height:92vh;border-radius:18px 18px 0 0}
+  .overlay{place-items:end center;padding:0}
+}
+</style>
+<!-- Firebase (nube) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+var firebaseConfig={apiKey:"AIzaSyDptLO9H4jPigqeXPv9Ald46m4oHwCjy58",authDomain:"presupuesto-vb.firebaseapp.com",projectId:"presupuesto-vb",storageBucket:"presupuesto-vb.firebasestorage.app",messagingSenderId:"775939495636",appId:"1:775939495636:web:0dc826f9abbe7b9f5d0d41"};
+</script>
+</head>
+<body>
+<div id="authGate" style="position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;padding:20px">
+  <div class="card" style="width:min(380px,100%);padding:26px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px"><div class="logo">🐷</div><span class="num" style="font-weight:700;font-size:19px">Cuentas</span></div>
+    <div class="eyebrow num" style="margin-bottom:20px">Presupuesto del hogar</div>
+    <label class="f">Correo</label>
+    <input id="authEmail" class="field" type="email" autocomplete="username" placeholder="tucorreo@gmail.com" style="margin-bottom:12px">
+    <label class="f">Contraseña</label>
+    <input id="authPass" class="field" type="password" autocomplete="current-password" placeholder="••••••••" style="margin-bottom:18px">
+    <button id="authBtn" class="btn btn-teal" style="width:100%;justify-content:center">Entrar</button>
+    <div id="authMsg" style="color:var(--coral);font-size:12.5px;margin-top:12px;min-height:16px"></div>
+  </div>
+</div>
+<div class="app" id="appRoot" style="display:none">
+  <aside>
+    <div class="brand"><div class="logo">🐷</div><span class="num" style="font-weight:700;font-size:17px">Cuentas</span></div>
+    <button class="navbtn active" data-view="dashboard">📊 Resumen</button>
+    <button class="navbtn" data-view="movimientos">➕ Movimientos</button>
+    <button class="navbtn" data-view="categorias">🏷️ Presupuesto</button>
+    <button class="navbtn" data-action="logout" style="margin-top:12px;color:rgba(255,255,255,.5)">🚪 Salir</button>
+  </aside>
+  <main>
+    <div class="head">
+      <div>
+        <div class="eyebrow num">Presupuesto del hogar</div>
+        <div class="title num">Roger &amp; Marcela</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="curtog" id="curTog"><button data-cur="NIO">C$</button><button data-cur="USD">$</button></div>
+        <button class="btn btn-ghost" data-action="import">⬆ Importar</button>
+        <button class="btn btn-teal" data-action="add-tx">＋ Movimiento</button>
+      </div>
+    </div>
+    <div id="periodBar"></div>
+    <div id="view"></div>
+    <div class="foot">
+      <span>Tipo de cambio US$→C$: <b class="num" id="tcLabel" style="color:var(--ink2)"></b> · ☁ Sincronizado en la nube</span>
+      <div style="display:none;gap:8px">
+        <button class="btn btn-ghost" data-action="clear-tx" style="font-size:12px;padding:6px 12px;color:#a33417;border-color:#f3c9bb">🗑 Borrar movimientos</button>
+        <button class="btn btn-ghost" data-action="reset" style="font-size:12px;padding:6px 12px">↺ Restaurar datos de ejemplo</button>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="modalRoot"></div>
+<div id="popRoot"></div>
+
+<script id="seed" type="application/json">{"categories": [{"name": "Microtec", "group": "Ingresos", "type": "ingreso", "budgetR": 5000, "budgetM": 0}, {"name": "Tecnología Moderna", "group": "Ingresos", "type": "ingreso", "budgetR": 0, "budgetM": 0}, {"name": "SINSA", "group": "Ingresos", "type": "ingreso", "budgetR": 0, "budgetM": 0}, {"name": "Polaris", "group": "Ingresos", "type": "ingreso", "budgetR": 0, "budgetM": 3899}, {"name": "Reembolsos", "group": "Ingresos", "type": "ingreso", "budgetR": 0, "budgetM": 0}, {"name": "Aguinaldos", "group": "Ingresos", "type": "ingreso", "budgetR": 0, "budgetM": 0}, {"name": "Otros Ingresos", "group": "Ingresos", "type": "ingreso", "budgetR": 0, "budgetM": 0}, {"name": "Student Loans", "group": "Deudas", "type": "gasto", "budgetR": 80, "budgetM": 0}, {"name": "Terreno", "group": "Deudas", "type": "gasto", "budgetR": 530, "budgetM": 0}, {"name": "Prestamo Personal", "group": "Deudas", "type": "gasto", "budgetR": 0, "budgetM": 302}, {"name": "Casa/Renta", "group": "Utilities", "type": "gasto", "budgetR": 1300, "budgetM": 0}, {"name": "Fee Condominio", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Luz", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 231.61}, {"name": "Agua", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 100}, {"name": "Gas", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 55}, {"name": "Claro", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 65}, {"name": "Marilu", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Alicia", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Jardinero", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 108.99}, {"name": "Servicio Externo", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Celular", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Combustible", "group": "Utilities", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Super", "group": "Groceries", "type": "gasto", "budgetR": 1000, "budgetM": 0}, {"name": "Vegetales adicionales", "group": "Groceries", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Pan / otros", "group": "Groceries", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Carnes Pollos", "group": "Groceries", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Pricemart", "group": "Groceries", "type": "gasto", "budgetR": 0, "budgetM": 400}, {"name": "BMI Insurance", "group": "Seguros", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Car Insurance", "group": "Seguros", "type": "gasto", "budgetR": 60, "budgetM": 35}, {"name": "Mantenimiento Casa", "group": "Hogar", "type": "gasto", "budgetR": 100, "budgetM": 0}, {"name": "Decoracion casa", "group": "Hogar", "type": "gasto", "budgetR": 100, "budgetM": 100}, {"name": "Gastos Jardin", "group": "Hogar", "type": "gasto", "budgetR": 65, "budgetM": 0}, {"name": "Muebles, Equipos", "group": "Hogar", "type": "gasto", "budgetR": 40, "budgetM": 0}, {"name": "Gastos Medicos", "group": "Médico", "type": "gasto", "budgetR": 50, "budgetM": 50}, {"name": "Farmacia", "group": "Médico", "type": "gasto", "budgetR": 50, "budgetM": 100}, {"name": "Salon / Barbero", "group": "Personal care", "type": "gasto", "budgetR": 20, "budgetM": 250}, {"name": "Salon Basico", "group": "Personal care", "type": "gasto", "budgetR": 25, "budgetM": 100}, {"name": "Dermatologo", "group": "Personal care", "type": "gasto", "budgetR": 0, "budgetM": 100}, {"name": "Cremas", "group": "Personal care", "type": "gasto", "budgetR": 0, "budgetM": 60}, {"name": "Shopping", "group": "Personal care", "type": "gasto", "budgetR": 50, "budgetM": 50}, {"name": "Terraza", "group": "Sports", "type": "gasto", "budgetR": 160, "budgetM": 0}, {"name": "Gym", "group": "Sports", "type": "gasto", "budgetR": 0, "budgetM": 210}, {"name": "Tennis", "group": "Sports", "type": "gasto", "budgetR": 50, "budgetM": 0}, {"name": "Padel", "group": "Sports", "type": "gasto", "budgetR": 50, "budgetM": 0}, {"name": "Boxeo", "group": "Sports", "type": "gasto", "budgetR": 160, "budgetM": 0}, {"name": "Ropa", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 40}, {"name": "Personal Care", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 20}, {"name": "Panales", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Wipes", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Leche", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Entretenimiento", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 10}, {"name": "Colegio", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 725}, {"name": "Colegio Fee", "group": "Amalia", "type": "gasto", "budgetR": 0, "budgetM": 50}, {"name": "Netflix", "group": "Membresías", "type": "gasto", "budgetR": 25, "budgetM": 0}, {"name": "Spotify", "group": "Membresías", "type": "gasto", "budgetR": 13, "budgetM": 0}, {"name": "Dropbox", "group": "Membresías", "type": "gasto", "budgetR": 12, "budgetM": 0}, {"name": "Gamepass", "group": "Membresías", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Viu", "group": "Membresías", "type": "gasto", "budgetR": 10, "budgetM": 0}, {"name": "Veterinario", "group": "Pets", "type": "gasto", "budgetR": 10, "budgetM": 0}, {"name": "Grooming", "group": "Pets", "type": "gasto", "budgetR": 0, "budgetM": 50}, {"name": "Comida Perros", "group": "Pets", "type": "gasto", "budgetR": 0, "budgetM": 80}, {"name": "Extra", "group": "Pets", "type": "gasto", "budgetR": 0, "budgetM": 10}, {"name": "Restaurantes", "group": "Entertainment", "type": "gasto", "budgetR": 550, "budgetM": 50}, {"name": "Salidas y Otros", "group": "Entertainment", "type": "gasto", "budgetR": 150, "budgetM": 80}, {"name": "Cumpleaños y eventos", "group": "Entertainment", "type": "gasto", "budgetR": 100, "budgetM": 100}, {"name": "Local Travel", "group": "Travel", "type": "gasto", "budgetR": 50, "budgetM": 50}, {"name": "International Travel", "group": "Travel", "type": "gasto", "budgetR": 50, "budgetM": 50}, {"name": "Mentores Solidarios", "group": "Otros", "type": "gasto", "budgetR": 70, "budgetM": 0}, {"name": "Intereses", "group": "Otros", "type": "gasto", "budgetR": 40, "budgetM": 20}, {"name": "US Tax", "group": "Otros", "type": "gasto", "budgetR": 10, "budgetM": 0}, {"name": "Carwash", "group": "Otros", "type": "gasto", "budgetR": 30, "budgetM": 0}, {"name": "RC InTech", "group": "Otros", "type": "gasto", "budgetR": 0, "budgetM": 0}, {"name": "Por clasificar", "group": "Otros", "type": "gasto", "budgetR": 100, "budgetM": 50}, {"name": "Gifts", "group": "Otros", "type": "gasto", "budgetR": 0, "budgetM": 0}], "transactions": [{"id": "seed-000", "date": "2026-06-22", "person": "Roger", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "HIPER LA COLONIA.", "merchant": "Hiper", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2758.82}, {"id": "seed-001", "date": "2026-06-25", "person": "Roger", "type": "gasto", "category": "Shopping", "group": "Personal care", "concept": "ROCKETS", "merchant": "Rockets", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 836.0}, {"id": "seed-002", "date": "2026-07-01", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "SEGURO PRF 5-7669-888140389", "merchant": "Seguro", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 42.71}, {"id": "seed-003", "date": "2026-06-05", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 6213.57}, {"id": "seed-004", "date": "2026-06-07", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "SUP.LA COLONIA SUC.P.ONCE", "merchant": "Sup.La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 482.6}, {"id": "seed-005", "date": "2026-06-10", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 11176.59}, {"id": "seed-006", "date": "2026-06-12", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1641.26}, {"id": "seed-007", "date": "2026-06-14", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 3078.5}, {"id": "seed-008", "date": "2026-06-16", "person": "Marcela", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "POLLO RICO -CC-", "merchant": "Pollo", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2780.0}, {"id": "seed-009", "date": "2026-06-17", "person": "Marcela", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "ORIGEN", "merchant": "Origen", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1220.03}, {"id": "seed-010", "date": "2026-06-17", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 7433.72}, {"id": "seed-011", "date": "2026-06-19", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "BAVARIA DELIKATESSEN.", "merchant": "Bavaria", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 977.43}, {"id": "seed-012", "date": "2026-06-24", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 6461.92}, {"id": "seed-013", "date": "2026-06-30", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 343.19}, {"id": "seed-014", "date": "2026-07-01", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 7700.03}, {"id": "seed-015", "date": "2026-07-04", "person": "Marcela", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "LA COLONIA APP -I-", "merchant": "La", "account": "Mastercard Colonia", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1555.86}, {"id": "seed-016", "date": "2026-06-17", "person": "Marcela", "type": "gasto", "category": "International Travel", "group": "Travel", "concept": "AMERICAN AI 0010650844487United StatesUS", "merchant": "American", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 32.4}, {"id": "seed-017", "date": "2026-06-17", "person": "Marcela", "type": "gasto", "category": "International Travel", "group": "Travel", "concept": "AMERICAN AI 0012352218535United StatesUS", "merchant": "American", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 199.84}, {"id": "seed-018", "date": "2026-06-17", "person": "Marcela", "type": "gasto", "category": "International Travel", "group": "Travel", "concept": "AMERICAN AI 0010650844327United StatesUS", "merchant": "American", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 28.75}, {"id": "seed-019", "date": "2026-06-21", "person": "Marcela", "type": "gasto", "category": "Shopping", "group": "Personal care", "concept": "SPORTLINE AMERICA", "merchant": "Sportline", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 975.95}, {"id": "seed-020", "date": "2026-06-21", "person": "Marcela", "type": "gasto", "category": "Shopping", "group": "Personal care", "concept": "NAUTICA", "merchant": "Nautica", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2622.0}, {"id": "seed-021", "date": "2026-06-29", "person": "Marcela", "type": "gasto", "category": "Combustible", "group": "Utilities", "concept": "UNO GALERIA", "merchant": "Uno", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2100.05}, {"id": "seed-022", "date": "2026-07-03", "person": "Marcela", "type": "gasto", "category": "Shopping", "group": "Personal care", "concept": "CHOICE CONCEPT STORE", "merchant": "Choice", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 798.0}, {"id": "seed-023", "date": "2026-06-08", "person": "Roger", "type": "gasto", "category": "Gastos Medicos", "group": "Médico", "concept": "CLI.DENTAL DR.ROGER BLANDON O.", "merchant": "Cli.Dental", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1480.0}, {"id": "seed-024", "date": "2026-06-10", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "ROSTICERIA TIP TOP (COLINAS)", "merchant": "Rosticeria", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1210.01}, {"id": "seed-025", "date": "2026-06-10", "person": "Roger", "type": "gasto", "category": "Netflix", "group": "Membresías", "concept": "NETFLIX.COM 866-579-7172", "merchant": "Netflix.Com", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 9.99}, {"id": "seed-026", "date": "2026-06-10", "person": "Roger", "type": "gasto", "category": "Shopping", "group": "Personal care", "concept": "TRES MASCULIN", "merchant": "Tres", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 514.0}, {"id": "seed-027", "date": "2026-06-11", "person": "Roger", "type": "gasto", "category": "Shopping", "group": "Personal care", "concept": "DISSUR-BEL 3484305", "merchant": "Dissur-Bel", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 583.46}, {"id": "seed-028", "date": "2026-06-11", "person": "Roger", "type": "gasto", "category": "Claro", "group": "Utilities", "concept": "COLECTORES CLARO 2654033", "merchant": "Colectores", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2490.01}, {"id": "seed-029", "date": "2026-06-11", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "Amazon.com*CG2CR3EH3 Amzn.com/billUS", "merchant": "Amazon.Com*Cg2Cr3Eh3", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 35.97}, {"id": "seed-030", "date": "2026-06-13", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA RESTAURANTES MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1052.7}, {"id": "seed-031", "date": "2026-06-13", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "Amazon.com*2F6W06SL3 Amzn.com/billUS", "merchant": "Amazon.Com*2F6W06Sl3", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 97.19}, {"id": "seed-032", "date": "2026-06-13", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "AMAZON MKTPL*OH1EA0Z33 Amzn.com/billUS", "merchant": "Amazon", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 12.9}, {"id": "seed-033", "date": "2026-06-13", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA PROPINA MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 29.0}, {"id": "seed-034", "date": "2026-06-14", "person": "Roger", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "SUPER EXPRESS LAS SIERRITAS", "merchant": "Super", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 471.0}, {"id": "seed-035", "date": "2026-06-14", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA PROPINA MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 29.0}, {"id": "seed-036", "date": "2026-06-14", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA RESTAURANTES MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2574.0}, {"id": "seed-037", "date": "2026-06-14", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA PROPINA MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 29.0}, {"id": "seed-038", "date": "2026-06-14", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA RESTAURANTES MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1573.0}, {"id": "seed-039", "date": "2026-06-18", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "RESTAURANTE EL TISCAPA", "merchant": "Restaurante", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 3463.0}, {"id": "seed-040", "date": "2026-06-20", "person": "Roger", "type": "gasto", "category": "BMI Insurance", "group": "Seguros", "concept": "BMI SERVICES INC ANDREWS@BMICOUS", "merchant": "Bmi", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 222.29}, {"id": "seed-041", "date": "2026-06-21", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PANE E VINO PIZZERIA", "merchant": "Pane", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1461.25}, {"id": "seed-042", "date": "2026-06-23", "person": "Roger", "type": "gasto", "category": "Carnes Pollos", "group": "Groceries", "concept": "CARNES SAN MARTIN GALERIAS", "merchant": "Carnes", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 1937.15}, {"id": "seed-043", "date": "2026-06-24", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "CLUB TERRAZA 2016MANAGUA", "merchant": "Club", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 878.75}, {"id": "seed-044", "date": "2026-06-25", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "BRU", "merchant": "Bru", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 748.0}, {"id": "seed-045", "date": "2026-06-25", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "ENCALICHADOS", "merchant": "Encalichados", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2233.0}, {"id": "seed-046", "date": "2026-06-25", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PEDIDOSYA PROPINA MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 29.0}, {"id": "seed-047", "date": "2026-06-25", "person": "Roger", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "PEDIDOSYA SUPERMERCADOS MANAGUA", "merchant": "Pedidosya", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 732.0}, {"id": "seed-048", "date": "2026-06-26", "person": "Roger", "type": "gasto", "category": "Salidas y Otros", "group": "Entertainment", "concept": "CINEMAS VIP", "merchant": "Cinemas", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 907.6}, {"id": "seed-049", "date": "2026-06-27", "person": "Roger", "type": "gasto", "category": "Viu", "group": "Membresías", "concept": "AMAZON PRIME*OD7CP3UF3 Amzn.com/billUS", "merchant": "Amazon", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 140.6}, {"id": "seed-050", "date": "2026-06-28", "person": "Roger", "type": "gasto", "category": "Super", "group": "Groceries", "concept": "MI KESO CARRETERA A MASAYA", "merchant": "Mi", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 342.0}, {"id": "seed-051", "date": "2026-06-28", "person": "Roger", "type": "gasto", "category": "BMI Insurance", "group": "Seguros", "concept": "BMI SERVICES INC ANDREWS@BMICOUS", "merchant": "Bmi", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 326.99}, {"id": "seed-052", "date": "2026-06-30", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "AMAZON MKTPL*8I02J9BV3 Amzn.com/billUS", "merchant": "Amazon", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 51.85}, {"id": "seed-053", "date": "2026-07-01", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "CLUB TERRAZA 2016MANAGUA", "merchant": "Club", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 732.49}, {"id": "seed-054", "date": "2026-07-01", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "CLUB TERRAZA 2016MANAGUA", "merchant": "Club", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 5493.65}, {"id": "seed-055", "date": "2026-07-01", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "SEGURO PRF 425667100165MANAGUA", "merchant": "Seguro", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 129.24}, {"id": "seed-056", "date": "2026-07-01", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "RESTAURANTE MESON ESPANOL", "merchant": "Restaurante", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2206.25}, {"id": "seed-057", "date": "2026-07-02", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "PAPA JOHNS PIZZA GALERIAS", "merchant": "Papa", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 747.5}, {"id": "seed-058", "date": "2026-07-04", "person": "Roger", "type": "gasto", "category": "Restaurantes", "group": "Entertainment", "concept": "CLUB TERRAZA REST.DEPORTIVO", "merchant": "Club", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "COR", "amount": 2700.35}, {"id": "seed-059", "date": "2026-07-06", "person": "Roger", "type": "gasto", "category": "Intereses", "group": "Otros", "concept": "INTERESES CORRIENTES SALDO DOLARES", "merchant": "Intereses", "account": "Visa Signature", "method": "Tarjeta de crédito", "currency": "USD", "amount": 100.55}, {"id": "seed-060", "date": "2026-07-15", "person": "Roger", "type": "ingreso", "category": "Microtec", "group": "Ingresos", "concept": "I QNA DE JULIO 2026", "merchant": "I", "account": "Cuenta corriente C$", "method": "Transferencia", "currency": "COR", "amount": 29373.3}, {"id": "seed-061", "date": "2026-07-30", "person": "Roger", "type": "ingreso", "category": "Microtec", "group": "Ingresos", "concept": "II QNA DE JULIO 2026", "merchant": "Ii", "account": "Cuenta corriente C$", "method": "Transferencia", "currency": "COR", "amount": 29373.3}, {"id": "seed-062", "date": "2026-07-21", "person": "Roger", "type": "ingreso", "category": "Microtec", "group": "Ingresos", "concept": "Pagos MICROTEC S.A-R", "merchant": "Pagos", "account": "Cuenta corriente C$", "method": "Transferencia", "currency": "COR", "amount": 37500.0}, {"id": "seed-063", "date": "2026-07-22", "person": "Roger", "type": "ingreso", "category": "Microtec", "group": "Ingresos", "concept": "Pagos MICROTEC S.A-R", "merchant": "Pagos", "account": "Cuenta corriente C$", "method": "Transferencia", "currency": "COR", "amount": 37140.0}, {"id": "seed-064", "date": "2026-07-31", "person": "Roger", "type": "ingreso", "category": "Otros Ingresos", "group": "Ingresos", "concept": "INTERESES (banco)", "merchant": "Intereses", "account": "Cuenta corriente C$", "method": "Transferencia", "currency": "COR", "amount": 41.08}, {"id": "seed-065", "date": "2026-07-01", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 1400}, {"id": "seed-066", "date": "2026-07-04", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 1000}, {"id": "seed-067", "date": "2026-07-04", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 1000}, {"id": "seed-068", "date": "2026-07-05", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 600}, {"id": "seed-069", "date": "2026-07-08", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 2500}, {"id": "seed-070", "date": "2026-07-16", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 2000}, {"id": "seed-071", "date": "2026-07-16", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 2200}, {"id": "seed-072", "date": "2026-07-19", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 200}, {"id": "seed-073", "date": "2026-07-22", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 2000}, {"id": "seed-074", "date": "2026-07-26", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 600}, {"id": "seed-075", "date": "2026-07-29", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 4000}, {"id": "seed-076", "date": "2026-07-30", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "RET. TARJETA ATM", "merchant": "Ret.", "account": "Cuenta corriente C$", "method": "Efectivo (retiro)", "currency": "COR", "amount": 2000}, {"id": "seed-077", "date": "2026-07-05", "person": "Roger", "type": "gasto", "category": "Por clasificar", "group": "Otros", "concept": "SEGURO PRF", "merchant": "Seguro", "account": "Cuenta corriente C$", "method": "Débito automático", "currency": "COR", "amount": 42.71}, {"id": "seed-078", "date": "2026-07-31", "person": "Roger", "type": "gasto", "category": "US Tax", "group": "Otros", "concept": "RETENCION IMPUESTO", "merchant": "Retencion", "account": "Cuenta corriente C$", "method": "Débito automático", "currency": "COR", "amount": 6.16}], "settings": {"tc": 36.6, "people": ["Roger", "Marcela"], "accounts": ["Visa Signature", "Mastercard Colonia", "Cuenta corriente C$", "Efectivo"], "methods": ["Tarjeta de crédito", "Tarjeta de débito", "Efectivo", "Efectivo (retiro)", "Transferencia", "Débito automático"], "groups": ["Ingresos", "Deudas", "Utilities", "Groceries", "Seguros", "Hogar", "Médico", "Personal care", "Sports", "Amalia", "Membresías", "Pets", "Entertainment", "Travel", "Otros"], "dataVersion": 2}}</script>
+<script>
+/* ===== constants ===== */
+var GROUP_COLORS={Utilities:"#0E7C86",Groceries:"#2F9E6B",Restaurantes:"#E4572E",Seguros:"#6B7B9E",Hogar:"#B8823A","Médico":"#C0567E","Personal care":"#8E6BB0",Compras:"#3D8DB0",Sports:"#2FA0A0","Membresías":"#9E6B4A",Entertainment:"#D08A2E",Hijos:"#7BA05B",Pets:"#5AAE9E",Travel:"#4A6FB0",Deudas:"#B0503D",Otros:"#8A97A0",Ingresos:"#2F9E6B"};
+var MESES=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+var MABR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+var C={teal:"#0E7C86",green:"#2F9E6B",coral:"#E4572E",amber:"#C98A16",ink:"#16323F",ink2:"#4A5560",muted:"#8A97A0",line:"#DCE3E7",bg:"#EEF1F3",tealSoft:"#E3F1F2",coralSoft:"#FBE7DF",greenSoft:"#E4F3EC"};
+var LSKEY="presupuesto_rm_v1";
+function OWNERS(){return state.settings.people.concat(["Compartido"]);}
+
+/* ===== state ===== */
+var SEED=JSON.parse(document.getElementById("seed").textContent);
+var state=JSON.parse(JSON.stringify(SEED));
+var ui={view:"dashboard",q:"",cur:"USD",colFilters:{},sort:null,expand:{ing:true,gas:false},collapsed:{},movCollapsed:{},pYear:null,pMonths:[],pMode:"year",pAvg:false,_pInit:false,dashSort:{key:"real",dir:"desc"},dashExpand:{},pPerson:"Todos"};
+
+var _db=null,_auth=null,_docref=null,_booted=false,_unsub=null;
+function localCache(){try{var s=localStorage.getItem(LSKEY);if(s)return JSON.parse(s);}catch(e){}return null;}
+function load(){return localCache()||JSON.parse(JSON.stringify(SEED));}
+function cloudSave(){if(!_docref)return;_docref.set({state:state,_updated:Date.now(),_by:(_auth&&_auth.currentUser&&_auth.currentUser.email)||""}).catch(function(e){console.error("nube save",e);});}
+function save(s){if(s)state=s;try{localStorage.setItem(LSKEY,JSON.stringify(state));}catch(e){}cloudSave();}
+function uid(){return Math.random().toString(36).slice(2,10);}
+function migrate(){var ch=false;state.categories.forEach(function(c){if(c.budgetR===undefined&&c.budgetM===undefined){var b=c.budget||0;if((c.owner||"Compartido")===state.settings.people[1]){c.budgetM=b;c.budgetR=0;}else{c.budgetR=b;c.budgetM=0;}ch=true;}});if(ch)save();}
+
+/* ===== helpers ===== */
+function tc(){return (state.settings&&state.settings.tc)||36.6;}
+function amtNIO(r){return r.currency==="USD"?r.amount*tc():r.amount;}
+function amtUSD(r){return r.currency==="USD"?r.amount:r.amount/tc();}
+function csOf(r){return ui.cur==="NIO"?amtNIO(r):amtUSD(r);}
+function budRaw(c){if(!c)return 0;return (c.budgetR||0)+(c.budgetM||0);}
+function bud(c){var b=budRaw(c);return ui.cur==="NIO"?b*tc():b;}
+function budR(c){var b=(c&&c.budgetR)||0;return ui.cur==="NIO"?b*tc():b;}
+function budM(c){var b=(c&&c.budgetM)||0;return ui.cur==="NIO"?b*tc():b;}
+function curSym(){return ui.cur==="NIO"?"C$":"$";}
+function fmtNIO(n){return "C$ "+Math.round(n||0).toLocaleString("es-NI");}
+function fmtUSD(n){return "$"+(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtOther(n){return ui.cur==="NIO"?fmtUSD(n):fmtNIO(n);}
+function fmtC(n){return ui.cur==="NIO"?fmtNIO(n):fmtUSD(n);}
+function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function alpha(a){return a.slice().sort(function(x,y){return String(x).localeCompare(String(y),"es",{sensitivity:"base"});});}
+function distinct(a,k){var s={};a.forEach(function(r){if(r[k])s[r[k]]=1;});return Object.keys(s);}
+function mkey(d){return (d||"").slice(0,7);}
+function ownerOf(c){return c.owner||"Compartido";}
+function colorOf(g){if(state.settings.groupColors&&state.settings.groupColors[g])return state.settings.groupColors[g];return GROUP_COLORS[g]||"#6B7B9E";}
+function groupsList(){var s={};(state.settings.groups||[]).forEach(function(g){s[g]=1;});state.categories.forEach(function(c){if(c.type==="gasto")s[c.group]=1;});return alpha(Object.keys(s));}
+function groupOrder(){var order=(state.settings.groups||[]).slice();groupsList().forEach(function(g){if(order.indexOf(g)<0)order.push(g);});return order;}
+function monthsList(){var s={};state.transactions.forEach(function(r){var k=mkey(r.date);if(k)s[k]=1;});return Object.keys(s).sort();}
+function dataYears(){var s={};monthsList().forEach(function(m){s[m.slice(0,4)]=1;});return Object.keys(s).sort();}
+function latestYM(){var ms=monthsList();return ms.length?ms[ms.length-1]:null;}
+function periodMonthsArr(){var all=monthsList();if(ui.pMode==="all")return all;return all.filter(function(m){if(m.slice(0,4)!==ui.pYear)return false;if(!ui.pMonths.length)return true;return ui.pMonths.indexOf(+m.slice(5,7))>=0;});}
+function periodMonthCount(){return Math.max(1,periodMonthsArr().length);}
+function scopeAmt(sum){return ui.pAvg?sum/periodMonthCount():sum;}
+function periodBudgetFor(c){var m=bud(c);return ui.pAvg?m:m*periodMonthCount();}
+function pMult(){return ui.pAvg?1:periodMonthCount();}
+function inScope(r){return periodMonthsArr().indexOf(mkey(r.date))>=0;}
+function scopeTx(){return state.transactions.filter(inScope);}
+function monthLabel(){
+  if(ui.pMode==="all")return "Todos los meses"+(ui.pAvg?" · promedio mensual":"");
+  var mm=ui.pMonths.slice().sort(function(a,b){return a-b;});
+  var lbl;
+  if(!mm.length)lbl=ui.pYear+" · año completo";
+  else if(mm.length===1)lbl=MESES[mm[0]-1]+" "+ui.pYear;
+  else{var isYTD=mm[0]===1&&mm.every(function(v,i){return v===i+1;});lbl=isYTD?(ui.pYear+" YTD (a "+MABR[mm[mm.length-1]-1]+")"):(mm.length+" meses de "+ui.pYear);}
+  return lbl+(ui.pAvg?" · promedio mensual":"");
+}
+function spentCat(name,scoped){return (scoped?scopeTx():state.transactions).filter(function(r){return r.type==="gasto"&&r.category===name;}).reduce(function(a,r){return a+csOf(r);},0);}
+function activeMonthsFor(name,type){type=type||"gasto";var s={};state.transactions.forEach(function(r){if(r.type===type&&r.category===name)s[mkey(r.date)]=1;});return Object.keys(s).length;}
+function promScopeMonths(){
+  var year,upTo;
+  if(ui.pMode==="year"){
+    year=ui.pYear;
+    upTo=ui.pMonths.length?Math.max.apply(null,ui.pMonths):12;
+  }else{
+    var ly=latestYM();if(!ly)return[];
+    year=ly.slice(0,4);upTo=+ly.slice(5,7);
+  }
+  if(!year)return[];
+  return monthsList().filter(function(m){return m.slice(0,4)===year&&+m.slice(5,7)<=upTo;});
+}
+function promCat(name,type){type=type||"gasto";var scope=promScopeMonths();var n=Math.max(1,scope.length);var tot=state.transactions.filter(function(r){return r.type===type&&r.category===name&&scope.indexOf(mkey(r.date))>=0;}).reduce(function(a,r){return a+csOf(r);},0);return tot/n;}
+function bar(pct,color){var p=Math.max(0,Math.min(100,pct*100));return '<div class="bar"><span style="width:'+p+'%;background:'+color+'"></span></div>';}
+function tag(g){var c=colorOf(g);return '<span class="tag" style="color:'+c+';background:'+c+'1A">'+esc(g)+'</span>';}
+
+/* ===== SVG bar chart ===== */
+function svgBars(data,opts){
+  opts=opts||{};var h=opts.height||180,w=520,pad=28,gap=8;var n=data.length||1;var bw=(w-pad-8)/n-gap;if(bw<6)bw=6;
+  var max=Math.max(1,opts.budget||0);data.forEach(function(d){if(d.value>max)max=d.value;});
+  var bars="",labels="";
+  data.forEach(function(d,i){var bh=(d.value/max)*(h-34);var x=pad+i*((w-pad-8)/n);var y=h-22-bh;var col=(opts.budget&&d.value>opts.budget)?C.coral:(opts.color||C.teal);
+    bars+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+Math.max(0,bh)+'" rx="4" fill="'+col+'"><title>'+esc(d.label)+': '+fmtC(d.value)+'</title></rect>';
+    labels+='<text x="'+(x+bw/2)+'" y="'+(h-8)+'" text-anchor="middle" font-size="11" fill="'+C.ink2+'">'+esc(d.label)+'</text>';});
+  var bl="";if(opts.budget){var by=h-22-(opts.budget/max)*(h-34);bl='<line x1="'+pad+'" y1="'+by+'" x2="'+(w-8)+'" y2="'+by+'" stroke="'+C.amber+'" stroke-width="1.5" stroke-dasharray="4 3"/>';}
+  return '<svg viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" preserveAspectRatio="xMidYMid meet">'+bars+bl+labels+'</svg>';
+}
+
+/* ===== columns (Movimientos) ===== */
+var COLS=[
+ {key:"date",label:"Fecha",type:"text",get:function(r){return r.date;}},
+ {key:"person",label:"Quién",type:"text",get:function(r){return r.person;}},
+ {key:"concept",label:"Concepto",type:"text",get:function(r){return r.concept||"";}},
+ {key:"method",label:"Método",type:"text",get:function(r){return r.method;}},
+ {key:"nio",label:"Monto NIO",type:"num",get:function(r){return amtNIO(r);}},
+ {key:"usd",label:"Monto USD",type:"num",get:function(r){return amtUSD(r);}},
+ {key:"group",label:"Grupo",type:"text",get:function(r){return r.group;}},
+ {key:"category",label:"Categoría",type:"text",get:function(r){return r.category;}}
+];
+function distinctVals(key){var c=COLS.filter(function(x){return x.key===key;})[0];var s={};scopeTx().forEach(function(r){s[String(c.get(r))]=1;});var a=Object.keys(s);if(c.type==="num")a.sort(function(x,y){return parseFloat(x)-parseFloat(y);});else a.sort(function(x,y){return x.localeCompare(y,"es",{sensitivity:"base"});});return a;}
+var POPCOL=null;
+function closePop(){var p=document.getElementById("popRoot");if(p)p.innerHTML="";POPCOL=null;}
+function openColMenu(key,rect){
+  POPCOL=key;var c=COLS.filter(function(x){return x.key===key;})[0];var vals=distinctVals(key);var f=ui.colFilters[key];var allSel=!f;var set={};if(f)f.forEach(function(v){set[v]=1;});
+  var items=vals.map(function(v){var disp=c.type==="num"?(key==="nio"?fmtNIO(parseFloat(v)):fmtUSD(parseFloat(v))):esc(v);var ck=allSel||set[v];return '<label class="pop-item"><input type="checkbox" data-colcheck="'+esc(v)+'"'+(ck?" checked":"")+'><span>'+disp+'</span></label>';}).join("");
+  var sl=c.type==="num"?["↑ Menor a mayor","↓ Mayor a menor"]:(key==="date"?["↑ Más antiguo","↓ Más reciente"]:["↑ A → Z","↓ Z → A"]);
+  var content='<div class="pop-sort"><button data-sort="asc">'+sl[0]+'</button><button data-sort="desc">'+sl[1]+'</button></div>'
+   +'<div class="pop-search"><input data-colsearch placeholder="Buscar valor…"></div>'
+   +'<label class="pop-item pop-all"><input type="checkbox" data-selectall'+(allSel?" checked":"")+'><b>Seleccionar todo</b></label>'
+   +'<div class="pop-list">'+items+'</div>'
+   +'<div class="pop-foot"><button data-clearcol>Quitar filtro</button><button data-popclose class="pl-primary">Listo</button></div>';
+  var W=270;var left=Math.max(8,Math.min(rect.left,(window.innerWidth||900)-W-8));var top=rect.bottom+4;
+  document.getElementById("popRoot").innerHTML='<div class="popback" data-popclose></div><div class="pop" style="left:'+left+'px;top:'+top+'px;width:'+W+'px">'+content+'</div>';
+}
+
+/* ===== render ===== */
+function renderPeriodBar(){
+  var years=dataYears();var ly=latestYM();var latestYear=ly?ly.slice(0,4):null;var latestMonth=ly?+ly.slice(5,7):null;
+  var h='<div class="pbar">';
+  h+='<div class="pbar-row"><span class="pbar-lbl">Año</span>';
+  years.forEach(function(y){var on=ui.pMode==="year"&&ui.pYear===y;h+='<button class="pchip'+(on?" on":"")+'" data-pyear="'+y+'">'+y+'</button>';});
+  if(latestYear)h+='<button class="pchip" data-pytd="'+latestYear+'">'+latestYear+' YTD</button>';
+  h+='<button class="pchip'+(ui.pMode==="all"?" on":"")+'" data-pall="1">Todos</button>';
+  h+='</div>';
+  h+='<div class="pbar-sep"></div>';
+  h+='<div class="pbar-row"><span class="pbar-lbl">Meses</span>';
+  if(ui.pMode==="year"){
+    for(var i=1;i<=12;i++){var on=ui.pMonths.indexOf(i)>=0;var disabled=!(years.indexOf(ui.pYear)>=0);h+='<button class="pchip mchip'+(on?" on":"")+'" data-pmonth="'+i+'">'+MABR[i-1]+'</button>';}
+    h+='<button class="pbar-link" data-pallmonths="1">selec. todos</button>';
+  } else {
+    h+='<span class="muted" style="font-size:12px">— (todos los años)</span>';
+  }
+  h+='</div>';
+  h+='<div class="pbar-sep"></div>';
+  h+='<button class="pchip avgtog'+(ui.pAvg?" on":"")+'" data-pavg="1">Ø Promedio mensual</button>';
+  if(ui.view==="dashboard"){
+    h+='<div class="pbar-sep"></div>';
+    h+='<div class="pbar-row"><span class="pbar-lbl">Persona</span>';
+    ["Todos"].concat(alpha(state.settings.people)).forEach(function(p){var on=ui.pPerson===p;h+='<button class="pchip'+(on?" on":"")+'" data-pperson="'+esc(p)+'">'+esc(p)+'</button>';});
+    h+='</div>';
+  }
+  h+='</div>';
+  document.getElementById("periodBar").innerHTML=h;
+}
+function render(){
+  document.getElementById("tcLabel").textContent=tc().toFixed(2);
+  if(!ui._pInit){var ly=latestYM();if(ly){ui.pYear=ly.slice(0,4);ui.pMonths=[+ly.slice(5,7)];}ui._pInit=true;}
+  renderPeriodBar();
+  document.querySelectorAll("#curTog button").forEach(function(b){b.classList.toggle("on",b.dataset.cur===ui.cur);});
+  document.querySelectorAll(".navbtn").forEach(function(b){b.classList.toggle("active",b.dataset.view===ui.view);});
+  var v=document.getElementById("view");
+  if(ui.view==="dashboard")v.innerHTML=viewDashboard();
+  else if(ui.view==="movimientos")v.innerHTML=viewMovimientos();
+  else v.innerHTML=viewCategorias();
+}
+function Empty(m){return '<div class="muted" style="font-size:13px;padding:14px 0">'+m+'</div>';}
+
+/* ===== Dashboard ===== */
+function ytdMonthsArr(){return promScopeMonths();}
+function viewDashboard(){
+  var pp=ui.pPerson||"Todos";
+  function personBud(c){if(pp==="Todos")return bud(c);return pp===state.settings.people[1]?budM(c):budR(c);}
+  function personFilter(arr){return pp==="Todos"?arr:arr.filter(function(r){return r.person===pp;});}
+  var st=personFilter(scopeTx());
+  var ing=st.filter(function(r){return r.type==="ingreso";});
+  var gas=st.filter(function(r){return r.type==="gasto";});
+  var ingS=scopeAmt(ing.reduce(function(a,r){return a+csOf(r);},0));
+  var gasS=scopeAmt(gas.reduce(function(a,r){return a+csOf(r);},0));
+  var balS=ingS-gasS;
+  var pctBal=ingS?balS/ingS*100:0;
+  var sumBudMonthly=state.categories.filter(function(c){return c.type==="gasto";}).reduce(function(a,c){return a+personBud(c);},0);
+  var budgetTotal=ui.pAvg?sumBudMonthly:sumBudMonthly*periodMonthCount();
+  var pctBudget=budgetTotal?gasS/budgetTotal*100:0;
+  var incBudMonthly=state.categories.filter(function(c){return c.type==="ingreso";}).reduce(function(a,c){return a+personBud(c);},0);
+  var incBudgetTotal=ui.pAvg?incBudMonthly:incBudMonthly*periodMonthCount();
+  var pctIncBudget=incBudgetTotal?ingS/incBudgetTotal*100:0;
+  var incDiff=ingS-incBudgetTotal, gasDiff=gasS-budgetTotal;
+  function trackCard(opts){
+    var over=opts.pct>100;var barColor=opts.goodWhenOver?(opts.pct>=100?C.green:C.amber):(over?C.coral:C.green);
+    var statusTxt=opts.budget>0?(opts.goodWhenOver
+        ? (opts.diff>=0?"+"+fmtC(opts.diff)+" sobre lo presupuestado":fmtC(Math.abs(opts.diff))+" por debajo de lo presupuestado")
+        : (over?"+"+fmtC(opts.diff)+" sobre presupuesto":fmtC(Math.abs(opts.diff))+" disponible")
+      ):"Sin presupuesto definido";
+    var statusColor=opts.budget>0?(opts.goodWhenOver?(opts.diff>=0?C.green:C.coral):(over?C.coral:C.green)):C.muted;
+    return '<div class="card lift" '+(opts.click?'data-kpiclick="'+opts.click+'" style="padding:22px;cursor:pointer"':'style="padding:22px"')+'>'
+     +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px"><div style="font-weight:700;font-size:15px;color:'+opts.accent+'">'+opts.title+'</div>'+(opts.budget>0?'<div class="num" style="font-size:12.5px;font-weight:600;color:'+barColor+'">'+Math.round(opts.pct)+'%</div>':'')+'</div>'
+     +'<div class="num" style="font-size:26px;font-weight:700;margin-top:6px">'+fmtC(opts.real)+' <span style="font-size:13px;font-weight:500;color:'+C.ink2+'">de '+fmtC(opts.budget)+'</span></div>'
+     +'<div style="margin-top:12px">'+bar(opts.budget>0?opts.pct/100:0,barColor)+'</div>'
+     +'<div style="margin-top:9px;font-size:12.5px;font-weight:600;color:'+statusColor+'">'+statusTxt+'</div>'
+     +'</div>';
+  }
+  var h='<div class="grid kpi-big-row" style="grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">';
+  h+=trackCard({title:"Ingresos",accent:C.green,click:"income",real:ingS,budget:incBudgetTotal,pct:pctIncBudget,diff:incDiff,goodWhenOver:true});
+  h+=trackCard({title:"Gastos",accent:C.coral,click:null,real:gasS,budget:budgetTotal,pct:pctBudget,diff:gasDiff,goodWhenOver:false});
+  h+='</div>';
+  var ingWidth=(ingS+gasS)>0?ingS/(ingS+gasS)*100:50, gasWidth=100-ingWidth;
+  h+='<div class="card lift" style="padding:22px;margin-bottom:16px">'
+   +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px"><div style="font-weight:700;font-size:15px">Balance del período</div><div class="num" style="font-size:22px;font-weight:700;color:'+(balS>=0?C.green:C.coral)+'">'+(balS>=0?"+":"")+fmtC(balS)+' <span style="font-size:13px;font-weight:600">('+Math.round(pctBal)+'%)</span></div></div>'
+   +'<div style="display:flex;height:16px;border-radius:8px;overflow:hidden;background:'+C.line+'"><div style="width:'+ingWidth+'%;background:'+C.green+'" title="Ingresos"></div><div style="width:'+gasWidth+'%;background:'+C.coral+'" title="Gastos"></div></div>'
+   +'<div style="display:flex;justify-content:space-between;margin-top:9px;font-size:12.5px;font-weight:600"><span style="color:'+C.green+'">● Ingresos '+fmtC(ingS)+'</span><span style="color:'+C.coral+'">● Gastos '+fmtC(gasS)+'</span></div>'
+   +'</div>';
+
+  /* Grupo table */
+  var ytdMonths=ytdMonthsArr();var ytdCount=Math.max(1,ytdMonths.length);
+  var groups=groupOrder().filter(function(g){return g!=="Ingresos";}).map(function(g){
+    var cats=state.categories.filter(function(c){return c.type==="gasto"&&c.group===g;});
+    var pBud=ui.pAvg?cats.reduce(function(a,c){return a+personBud(c);},0):cats.reduce(function(a,c){return a+personBud(c);},0)*periodMonthCount();
+    var real=scopeAmt(st.filter(function(r){return r.type==="gasto"&&r.group===g;}).reduce(function(a,r){return a+csOf(r);},0));
+    var pct=pBud>0?real/pBud:-1;
+    var ytd=personFilter(state.transactions).filter(function(r){return r.type==="gasto"&&r.group===g&&ytdMonths.indexOf(mkey(r.date))>=0;}).reduce(function(a,r){return a+csOf(r);},0);
+    var ytdAvg=ytd/ytdCount;
+    return {g:g,bud:pBud,real:real,pct:pct,ytd:ytd,ytdavg:ytdAvg};
+  }).filter(function(x){return x.bud>0||x.real>0||x.ytd>0;});
+  var ds=ui.dashSort||{key:"real",dir:"desc"};
+  groups.sort(function(a,b){var va=a[ds.key],vb=b[ds.key];return ds.dir==="desc"?vb-va:va-vb;});
+  function dsArrow(k){return ds.key===k?(ds.dir==="desc"?" ▼":" ▲"):"";}
+  function dsHead(k,label,al){return '<th class="rt sortable" data-dashsort="'+k+'" style="cursor:pointer;'+(al?"":"text-align:left")+'">'+label+dsArrow(k)+'</th>';}
+  h+='<div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">';
+  h+='<div style="padding:16px 18px;border-bottom:1px solid '+C.line+'"><b>Gastos por grupo</b> <span class="muted" style="font-size:12px">· '+monthLabel()+(pp!=="Todos"?" · "+esc(pp):"")+' · toca un encabezado para ordenar</span></div>';
+  h+='<div style="overflow-x:auto"><table><thead><tr><th>Grupo</th>'+dsHead("bud","Presupuesto",true)+dsHead("real","Gasto",true)+dsHead("pct","Cumplimiento",true)+dsHead("ytd","YTD",true)+dsHead("ytdavg","Prom. YTD",true)+'</tr></thead><tbody>';
+  if(groups.length){
+    var totBud=groups.reduce(function(a,x){return a+x.bud;},0),totReal=groups.reduce(function(a,x){return a+x.real;},0);
+    var totYtd=groups.reduce(function(a,x){return a+x.ytd;},0),totYtdAvg=totYtd/ytdCount;
+    var totPct=totBud>0?totReal/totBud:-1;var totOver=totPct>1;
+    h+='<tr class="sum-bal" style="background:'+C.tealSoft+';border-bottom:2px solid '+C.teal+'"><td><b>Total</b></td><td class="num rt"><b>'+fmtC(totBud)+'</b></td><td class="num rt"><b>'+fmtC(totReal)+'</b></td><td class="rt">'+(totBud>0?'<b style="color:'+(totOver?C.coral:C.green)+'">'+Math.round(totPct*100)+'%</b>':'<span class="muted">—</span>')+'</td><td class="num rt"><b>'+fmtC(totYtd)+'</b></td><td class="num rt"><b>'+fmtC(totYtdAvg)+'</b></td></tr>';
+  }
+  h+=groups.map(function(x){
+    var over=x.pct>1;var expanded=!!ui.dashExpand[x.g];
+    var row='<tr class="rowh" data-dashgexp="'+esc(x.g)+'" style="cursor:pointer"><td><button class="exp" data-dashgexp="'+esc(x.g)+'" style="margin-right:4px">'+(expanded?"▾":"▸")+'</button>'+tag(x.g)+'</td><td class="num rt">'+fmtC(x.bud)+'</td><td class="num rt" style="font-weight:600">'+fmtC(x.real)+'</td><td class="rt">'+(x.bud>0?'<span style="color:'+(over?C.coral:C.green)+';font-weight:600">'+Math.round(x.pct*100)+'%</span>':'<span class="muted">—</span>')+'</td><td class="num rt muted">'+fmtC(x.ytd)+'</td><td class="num rt muted">'+fmtC(x.ytdavg)+'</td></tr>';
+    if(expanded){
+      var cats=state.categories.filter(function(c){return c.type==="gasto"&&c.group===x.g;});
+      var pm3=pMult();
+      var rows2=cats.map(function(c){
+        var realC=scopeAmt(personFilter(scopeTx()).filter(function(r){return r.type==="gasto"&&r.category===c.name;}).reduce(function(a,r){return a+csOf(r);},0));
+        var ytdC=personFilter(state.transactions).filter(function(r){return r.type==="gasto"&&r.category===c.name&&ytdMonths.indexOf(mkey(r.date))>=0;}).reduce(function(a,r){return a+csOf(r);},0);
+        return {c:c,bud:personBud(c)*pm3,real:realC,ytd:ytdC,ytdavg:ytdC/ytdCount};
+      }).filter(function(y){return y.bud>0||y.real>0;}).sort(function(a,b){return b.real-a.real;});
+      rows2.forEach(function(y){
+        var p=y.bud>0?y.real/y.bud:-1;var o2=p>1;
+        row+='<tr class="rowh" data-cat="'+esc(y.c.name)+'" style="cursor:pointer;background:'+C.bg+'"><td style="padding-left:34px">'+esc(y.c.name)+'</td><td class="num rt">'+fmtC(y.bud)+'</td><td class="num rt">'+fmtC(y.real)+'</td><td class="rt">'+(y.bud>0?'<span style="color:'+(o2?C.coral:C.green)+';font-weight:600">'+Math.round(p*100)+'%</span>':'<span class="muted">—</span>')+'</td><td class="num rt muted">'+fmtC(y.ytd)+'</td><td class="num rt muted">'+fmtC(y.ytdavg)+'</td></tr>';
+      });
+      if(!rows2.length)row+='<tr><td colspan="6" style="padding-left:34px" class="muted" style="font-size:12px">Sin categorías con monto en este grupo.</td></tr>';
+    }
+    return row;
+  }).join("");
+  h+='</tbody></table>'+(groups.length?"":'<div class="muted" style="padding:20px">Sin gastos ni presupuesto en este período.</div>')+'</div></div>';
+
+
+  /* Pending table */
+  var pend=st.filter(isPending);
+  if(pend.length){
+    var pNIO=pend.reduce(function(a,r){return a+amtNIO(r);},0),pUSD=pend.reduce(function(a,r){return a+amtUSD(r);},0);
+    h+='<div class="card" style="padding:0;overflow:hidden;margin-bottom:16px;border-color:'+C.amber+'55">';
+    h+='<div style="padding:16px 18px;border-bottom:1px solid '+C.line+';display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><span style="color:'+C.amber+';font-weight:700">⚠ Pendientes de clasificar</span> <span class="muted" style="font-size:12px">· '+pend.length+' mov. · toca una fila para asignar</span></div><span class="num" style="font-weight:700">'+fmtNIO(pNIO)+' <span class="muted" style="font-weight:500">/ '+fmtUSD(pUSD)+'</span></span></div>';
+    h+='<div style="overflow-x:auto"><table><tbody>'+pend.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,10).map(function(r){return '<tr class="rowh mv-row" data-classify="'+r.id+'" style="cursor:pointer"><td class="muted" style="white-space:nowrap">'+esc(r.date)+'</td><td>'+esc(r.person)+'</td><td style="max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.concept)+'</td><td class="num" style="text-align:right;font-weight:600;white-space:nowrap">'+fmtNIO(amtNIO(r))+'</td><td class="num" style="text-align:right;white-space:nowrap;color:'+C.ink2+'">'+fmtUSD(amtUSD(r))+'</td></tr>';}).join("")+'</tbody></table></div>';
+    if(pend.length>10)h+='<div style="padding:10px 18px" class="muted" style="font-size:12px">y '+(pend.length-10)+' más — ve a Movimientos para verlos todos.</div>';
+    h+='</div>';
+  }
+
+  /* recent movements */
+  var recent=st.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,7);
+  h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><b>Movimientos recientes</b><button class="iconbtn" data-view-link="movimientos" style="color:'+C.teal+';font-size:12.5px;font-weight:600">Ver todos ›</button></div>';
+  h+=recent.length?recent.map(function(r){return '<div class="rowh" style="display:flex;justify-content:space-between;align-items:center;padding:8px 6px"><div style="min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(r.concept||r.category)+'</div><div class="muted" style="font-size:11.5px">'+esc(r.date)+' · '+esc(r.category)+'</div></div><span class="num" style="font-weight:600;color:'+(r.type==="ingreso"?C.green:C.ink)+'">'+(r.type==="ingreso"?"+":"")+fmtC(csOf(r))+'</span></div>';}).join(""):Empty("Nada aún.");
+  h+='</div>';
+  return h;
+}
+
+/* ===== Movimientos ===== */
+function isPending(r){return /clasificar/i.test(r.category||"");}
+function viewMovimientos(){
+  var base=scopeTx().filter(function(r){if(!ui.q)return true;var s=(r.concept+" "+r.category+" "+r.merchant+" "+r.person+" "+r.group).toLowerCase();return s.indexOf(ui.q.toLowerCase())>=0;});
+  var classified=base.filter(function(r){return !isPending(r);});
+  var pending=base.filter(isPending);
+  function row(r){
+    return '<tr class="rowh mv-row" data-classify="'+r.id+'" style="cursor:pointer"><td class="muted" style="white-space:nowrap">'+esc(r.date)+'</td><td>'+esc(r.person)+'</td><td style="max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.concept)+'</td><td class="muted" style="white-space:nowrap">'+esc(r.method)+'</td><td class="muted" style="text-align:center;white-space:nowrap">'+(r.currency==="USD"?"US$":"C$")+'</td><td class="num" style="text-align:right;font-weight:600;white-space:nowrap;color:'+(r.type==="ingreso"?C.green:C.ink)+'">'+(r.type==="ingreso"?"+":"")+fmtNIO(amtNIO(r))+'</td><td class="num" style="text-align:right;white-space:nowrap;color:'+(r.type==="ingreso"?C.green:C.ink2)+'">'+(r.type==="ingreso"?"+":"")+fmtUSD(amtUSD(r))+'</td><td style="text-align:right"><button class="iconbtn" data-del="'+r.id+'" title="Eliminar">🗑</button></td></tr>';
+  }
+  var h='<div class="card" style="padding:0;overflow:hidden">';
+  h+='<div style="padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><b>Movimientos</b><div class="muted" style="font-size:12px">'+monthLabel()+' · '+base.length+' registros · agrupados por grupo y categoría · toca una fila para (re)clasificar</div></div>';
+  h+='<div style="display:flex;align-items:center;gap:8px;background:'+C.bg+';border-radius:10px;padding:8px 12px;min-width:220px">🔍<input id="searchBox" value="'+esc(ui.q)+'" placeholder="Buscar…" style="border:none;background:none;outline:none;width:100%;font-size:13px"/></div></div>';
+  h+='</div>';
+
+  var byGroup={};classified.forEach(function(r){(byGroup[r.group]=byGroup[r.group]||{});(byGroup[r.group][r.category]=byGroup[r.group][r.category]||[]).push(r);});
+  var order=["Ingresos"].concat(groupOrder().filter(function(g){return g!=="Ingresos";}));
+  Object.keys(byGroup).forEach(function(g){if(order.indexOf(g)<0)order.push(g);});
+
+  order.forEach(function(g){
+    var cats=byGroup[g];if(!cats)return;
+    var gTxs=[];Object.keys(cats).forEach(function(c){gTxs=gTxs.concat(cats[c]);});
+    var gNIO=gTxs.reduce(function(a,r){return a+amtNIO(r);},0),gUSD=gTxs.reduce(function(a,r){return a+amtUSD(r);},0);
+    var collapsed=ui.movCollapsed[g];var col=colorOf(g);
+    h+='<div class="card" style="margin-top:14px;padding:0;overflow:hidden">';
+    h+='<button class="mv-ghead" data-movgcol="'+esc(g)+'" style="border-left:4px solid '+col+'"><span style="color:'+col+';font-weight:700">'+(collapsed?"▸":"▾")+' '+esc(g)+'</span><span class="muted" style="font-size:12px">'+gTxs.length+' mov.</span><span class="num" style="margin-left:auto;font-weight:700">'+fmtNIO(gNIO)+' <span class="muted" style="font-weight:500">/ '+fmtUSD(gUSD)+'</span></span></button>';
+    if(!collapsed){
+      var catNames=Object.keys(cats).sort(function(a,b){var ta=cats[a].reduce(function(s,r){return s+amtNIO(r);},0),tb=cats[b].reduce(function(s,r){return s+amtNIO(r);},0);return tb-ta;});
+      catNames.forEach(function(cn){
+        var txs=cats[cn].slice().sort(function(a,b){return a.date<b.date?1:-1;});
+        var cNIO=txs.reduce(function(a,r){return a+amtNIO(r);},0),cUSD=txs.reduce(function(a,r){return a+amtUSD(r);},0);
+        h+='<div class="mv-chead"><span>'+esc(cn)+'</span><span class="muted" style="font-size:11.5px">'+txs.length+' mov.</span><span class="num" style="margin-left:auto;font-size:12.5px">'+fmtNIO(cNIO)+' <span class="muted">/ '+fmtUSD(cUSD)+'</span></span></div>';
+        h+='<div style="overflow-x:auto"><table><tbody>'+txs.map(row).join("")+'</tbody></table></div>';
+      });
+    }
+    h+='</div>';
+  });
+
+  if(pending.length){
+    var pNIO=pending.reduce(function(a,r){return a+amtNIO(r);},0),pUSD=pending.reduce(function(a,r){return a+amtUSD(r);},0);
+    var pcol=ui.movCollapsed["__pending__"];
+    h+='<div class="card" style="margin-top:18px;padding:0;overflow:hidden;border-color:'+C.amber+'55">';
+    h+='<button class="mv-ghead" data-movgcol="__pending__" style="border-left:4px solid '+C.amber+'"><span style="color:'+C.amber+';font-weight:700">'+(pcol?"▸":"▾")+' ⚠ Pendientes de clasificar</span><span class="muted" style="font-size:12px">'+pending.length+' mov.</span><span class="num" style="margin-left:auto;font-weight:700">'+fmtNIO(pNIO)+' <span class="muted" style="font-weight:500">/ '+fmtUSD(pUSD)+'</span></span></button>';
+    if(!pcol){
+      h+='<div class="mv-chead" style="color:'+C.amber+'">Toca una fila para asignarle grupo y categoría</div>';
+      h+='<div style="overflow-x:auto"><table><tbody>'+pending.slice().sort(function(a,b){return a.date<b.date?1:-1;}).map(row).join("")+'</tbody></table></div>';
+    }
+    h+='</div>';
+  }
+
+  if(!base.length)h+='<div class="card"><div class="muted" style="padding:20px">No hay movimientos que coincidan.</div></div>';
+  return h;
+}
+
+/* ===== classify movimiento modal ===== */
+function openClassify(id){
+  var r=state.transactions.filter(function(x){return x.id===id;})[0];if(!r)return;
+  var groupOpts=(r.type==="ingreso"?["Ingresos"]:groupsList().filter(function(x){return x!=="Ingresos";}));
+  var catsFor=function(g){var opts=state.categories.filter(function(c){return c.type===r.type&&c.group===g;}).map(function(c){return c.name;});if(g===r.group&&opts.indexOf(r.category)<0)opts=[r.category].concat(opts);return alpha(opts);};
+  var gopts=groupOpts.map(function(g){return '<option'+(g===r.group?" selected":"")+'>'+esc(g)+'</option>';}).join("");
+  var copts=catsFor(r.group).map(function(c){return '<option'+(c===r.category?" selected":"")+'>'+esc(c)+'</option>';}).join("");
+  var h='<div class="mhead">Editar movimiento <button class="close" data-close>✕</button></div>';
+  h+='<div class="mbody">';
+  h+='<div class="r2"><div><label class="f">Fecha</label><input class="field" id="cl_date" type="date" value="'+esc(r.date)+'"></div><div><label class="f">Persona</label><select class="field" id="cl_person">'+alpha(state.settings.people).map(function(p){return '<option'+(p===r.person?" selected":"")+'>'+esc(p)+'</option>';}).join("")+'</select></div></div>';
+  h+='<div><label class="f">Concepto</label><input class="field" id="cl_concept" value="'+esc(r.concept||"")+'"></div>';
+  h+='<div class="r2"><div><label class="f">Grupo</label><select class="field" id="cl_group">'+gopts+'</select></div><div><label class="f">Categoría</label><select class="field" id="cl_cat">'+copts+'</select></div></div>';
+  h+='<div class="r2"><div><label class="f">Moneda</label><select class="field" id="cl_cur"><option value="COR"'+(r.currency==="COR"?" selected":"")+'>C$</option><option value="USD"'+(r.currency==="USD"?" selected":"")+'>US$</option></select></div><div><label class="f">Monto</label><input class="field num" id="cl_amount" type="number" value="'+r.amount+'"></div></div>';
+  h+='</div><div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-saveclassify="'+id+'">Guardar</button></div>';
+  openModal(h);
+  var gsel=document.getElementById("cl_group");
+  gsel.addEventListener("change",function(){
+    var opts=catsFor(gsel.value);var csel=document.getElementById("cl_cat");
+    csel.innerHTML=opts.map(function(c){return '<option>'+esc(c)+'</option>';}).join("");
+  });
+}
+function saveClassify(id){
+  var g=document.getElementById("cl_group").value;var cat=document.getElementById("cl_cat").value;var d=document.getElementById("cl_date").value;
+  var person=document.getElementById("cl_person").value;var concept=document.getElementById("cl_concept").value;
+  var cur=document.getElementById("cl_cur").value;var amount=parseFloat(document.getElementById("cl_amount").value);
+  state.transactions.forEach(function(r){if(r.id===id){r.group=g;r.category=cat;if(d)r.date=d;r.person=person;r.concept=concept;r.currency=cur;if(!isNaN(amount)&&amount>0)r.amount=amount;}});
+  save();closeModal();render();
+}
+
+/* ===== Categorías (resumen + lista) ===== */
+function realIncPerson(p){return scopeTx().filter(function(r){return r.type==="ingreso"&&r.person===p;}).reduce(function(a,r){return a+csOf(r);},0);}
+function realExpPerson(p){return scopeTx().filter(function(r){return r.type==="gasto"&&r.person===p;}).reduce(function(a,r){return a+csOf(r);},0);}
+function budByOwner(type,owner){return state.categories.filter(function(c){return c.type===type&&(owner?ownerOf(c)===owner:true);}).reduce(function(a,c){return a+bud(c);},0);}
+function promIncome(){var scope=promScopeMonths();var n=Math.max(1,scope.length);var tot=state.transactions.filter(function(r){return r.type==="ingreso"&&scope.indexOf(mkey(r.date))>=0;}).reduce(function(a,r){return a+csOf(r);},0);return tot/n;}
+function promExpense(){var scope=promScopeMonths();var n=Math.max(1,scope.length);var tot=state.transactions.filter(function(r){return r.type==="gasto"&&scope.indexOf(mkey(r.date))>=0;}).reduce(function(a,r){return a+csOf(r);},0);return tot/n;}
+function pctTxt(real,budget){if(!budget)return '<span class="muted">—</span>';var p=real/budget*100;var col=real>budget?C.coral:C.green;return '<span style="color:'+col+';font-weight:600">'+Math.round(p)+'%</span>';}
+
+function viewCategorias(){
+  var incReal=scopeAmt(scopeTx().filter(function(r){return r.type==="ingreso";}).reduce(function(a,r){return a+csOf(r);},0));
+  var gasReal=scopeAmt(scopeTx().filter(function(r){return r.type==="gasto";}).reduce(function(a,r){return a+csOf(r);},0));
+  var pm=pMult();
+  var incCats=state.categories.filter(function(c){return c.type==="ingreso";});var budIncR=incCats.reduce(function(a,c){return a+budR(c);},0)*pm,budIncM=incCats.reduce(function(a,c){return a+budM(c);},0)*pm,budIncT=budIncR+budIncM;
+  var exp=state.categories.filter(function(c){return c.type==="gasto";});
+  var budGasR=exp.reduce(function(a,c){return a+budR(c);},0)*pm,budGasM=exp.reduce(function(a,c){return a+budM(c);},0)*pm,budGasT=budGasR+budGasM;
+  var balReal=incReal-gasReal,balBud=budIncT-budGasT;var pctBal=incReal?balReal/incReal*100:0;
+  function cell(v){return '<td class="num rt">'+v+'</td>';}
+  var h='<div class="card" style="margin-bottom:18px;padding:0;overflow:hidden">';
+  h+='<div style="padding:16px 18px;border-bottom:1px solid '+C.line+'"><b>Resumen</b> <span class="muted" style="font-size:12px">· '+monthLabel()+' · presupuesto vs. real</span></div>';
+  h+='<div style="overflow-x:auto"><table class="sumt"><thead><tr><th>Concepto</th><th class="rt">'+esc(state.settings.people[0]||"")+'</th><th class="rt">'+esc(state.settings.people[1]||"")+'</th><th class="rt">Total</th><th class="rt">Prom. Mensual</th><th class="rt">Prom. Mes / Ppto</th></tr></thead><tbody>';
+  h+='<tr class="sum-main"><td><button class="exp" data-exp="ing">'+(ui.expand.ing?"▾":"▸")+' Ingresos</button></td>'+cell(fmtC(budIncR))+cell(fmtC(budIncM))+cell(fmtC(budIncT))+cell(fmtC(promIncome()))+cell(pctTxt(promIncome(),budIncT/pm))+'</tr>';
+  if(ui.expand.ing){var incs=state.categories.filter(function(c){return c.type==="ingreso";}).filter(function(c){var ra=state.transactions.filter(function(r){return r.type==="ingreso"&&r.category===c.name;}).reduce(function(a,r){return a+csOf(r);},0);return bud(c)>0||ra>0;});incs.forEach(function(c){var real=scopeAmt(scopeTx().filter(function(r){return r.type==="ingreso"&&r.category===c.name;}).reduce(function(a,r){return a+csOf(r);},0));var cb=bud(c)*pm;var cProm=promCat(c.name,"ingreso");var inR='<input class="minput num" data-editincbudgetr="'+esc(c.name)+'" type="number" value="'+(c.budgetR?Math.round(budR(c)*100)/100:"")+'" placeholder="0">';var inM='<input class="minput num" data-editincbudgetm="'+esc(c.name)+'" type="number" value="'+(c.budgetM?Math.round(budM(c)*100)/100:"")+'" placeholder="0">';h+='<tr class="sub"><td style="padding-left:26px">'+esc(c.name)+'</td><td class="rt">'+inR+'</td><td class="rt">'+inM+'</td><td class="rt"><b class="num">'+fmtC(cb)+'</b></td><td class="rt">'+fmtC(cProm)+'</td><td class="rt">'+pctTxt(cProm,cb/pm)+'</td></tr>';});h+='<tr class="sub"><td colspan="6" style="padding-left:26px"><button class="linkbtn" data-action="add-income">＋ Agregar ingreso</button></td></tr>';}
+  h+='<tr class="sum-main"><td><button class="exp" data-exp="gas">'+(ui.expand.gas?"▾":"▸")+' Gastos</button></td>'+cell(fmtC(budGasR))+cell(fmtC(budGasM))+cell(fmtC(budGasT))+cell(fmtC(promExpense()))+cell(pctTxt(promExpense(),budGasT/pm))+'</tr>';
+  if(ui.expand.gas){groupOrder().forEach(function(g){if(g==="Ingresos")return;var gcats=state.categories.filter(function(c){return c.type==="gasto"&&c.group===g;});var gbt=gcats.reduce(function(a,c){return a+bud(c);},0)*pm;var gbr=gcats.reduce(function(a,c){return a+budR(c);},0)*pm;var gbm=gcats.reduce(function(a,c){return a+budM(c);},0)*pm;var gsProm=gcats.reduce(function(a,c){return a+promCat(c.name);},0);var gr=scopeAmt(scopeTx().filter(function(r){return r.type==="gasto"&&r.group===g;}).reduce(function(a,r){return a+csOf(r);},0));if(!gbt&&!gr)return;h+='<tr class="sub"><td style="padding-left:26px">'+tag(g)+'</td>'+cell(fmtC(gbr))+cell(fmtC(gbm))+cell(fmtC(gbt))+cell(fmtC(gsProm))+cell(pctTxt(gsProm,gbt/pm))+'</tr>';});}
+  h+='<tr class="sum-bal"><td><b>Balance</b></td>'+cell(fmtC(budIncR-budGasR))+cell(fmtC(budIncM-budGasM))+cell(fmtC(balBud))+cell("")+cell("")+'</tr>';
+  h+='</tbody></table></div>';
+  h+='</div>';
+
+  /* ===== Presupuesto por grupos ===== */
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px"><div><b style="font-size:16px">Presupuesto por grupo</b><div class="muted" style="font-size:12px">Escribe el presupuesto de Roger y de Marcela en cada categoría · el Total se suma solo</div></div><button class="btn btn-ink" data-action="add-group">＋ Grupo</button></div>';
+  h+='<div class="card" style="padding:0;overflow:hidden"><div style="overflow-x:auto"><table class="catt"><thead><tr><th>Categoría</th><th class="rt">'+esc(state.settings.people[0]||"")+'</th><th class="rt">'+esc(state.settings.people[1]||"")+'</th><th class="rt">Total</th><th class="rt">Prom. Mensual</th><th class="rt">Prom. Mes / Ppto</th><th></th></tr></thead><tbody>';
+  groupOrder().forEach(function(g){
+    if(g==="Ingresos")return;
+    var cats=state.categories.filter(function(c){return c.type==="gasto"&&c.group===g;});
+    var pm2=pMult();
+    var gR=cats.reduce(function(a,c){return a+budR(c);},0)*pm2;var gM=cats.reduce(function(a,c){return a+budM(c);},0)*pm2;var gT=gR+gM;
+    var gProm=cats.reduce(function(a,c){return a+promCat(c.name);},0);
+    var gr=scopeAmt(scopeTx().filter(function(r){return r.type==="gasto"&&r.group===g;}).reduce(function(a,r){return a+csOf(r);},0));
+    var collapsed=ui.collapsed[g];var col=colorOf(g);
+    h+='<tr class="grp-h" draggable="true" data-drag-group="'+esc(g)+'"><td><span class="drag-handle" title="Arrastrar para reordenar">⠿</span><button class="exp" data-gcol="'+esc(g)+'" style="color:'+col+'">'+(collapsed?"▸":"▾")+' '+esc(g)+'</button> <span class="muted" style="font-weight:400;font-size:11.5px">'+cats.length+' cat.</span></td><td class="num rt"><b>'+fmtC(gR)+'</b></td><td class="num rt"><b>'+fmtC(gM)+'</b></td><td class="num rt"><b>'+fmtC(gT)+'</b></td><td class="num rt muted">'+fmtC(gProm)+'</td><td class="rt">'+pctTxt(gProm,gT/pm2)+'</td><td class="rt" style="white-space:nowrap"><button class="iconbtn" data-addcatgrp="'+esc(g)+'" title="Agregar categoría">＋</button> <button class="iconbtn" data-editgrp="'+esc(g)+'" title="Editar grupo">✎</button> <button class="iconbtn" data-delgroup="'+esc(g)+'" title="Quitar grupo">🗑</button></td></tr>';
+    if(!collapsed){
+      cats.map(function(c){return {c:c,prom:promCat(c.name)};}).sort(function(a,b){return Math.max(budRaw(b.c),b.prom)-Math.max(budRaw(a.c),a.prom);}).forEach(function(x){
+        var c=x.c;var promBasis=bud(c);var pct=promBasis>0?x.prom/promBasis:0;var over=pct>1;
+        var inR='<input class="minput num" data-editbudgetr="'+esc(c.name)+'" type="number" value="'+(c.budgetR?Math.round(budR(c)*100)/100:"")+'" placeholder="0">';
+        var inM='<input class="minput num" data-editbudgetm="'+esc(c.name)+'" type="number" value="'+(c.budgetM?Math.round(budM(c)*100)/100:"")+'" placeholder="0">';
+        h+='<tr class="rowh cat-r"><td style="padding-left:26px">'+esc(c.name)+'</td><td class="rt">'+inR+'</td><td class="rt">'+inM+'</td><td class="num rt"><b>'+fmtC(bud(c))+'</b></td><td class="num rt">'+fmtC(x.prom)+'</td><td class="rt">'+(promBasis>0?'<span style="color:'+(over?C.coral:C.green)+';font-weight:600">'+Math.round(pct*100)+'%</span>':'<span class="muted">—</span>')+'</td><td class="rt" style="white-space:nowrap"><button class="iconbtn" data-editcatbtn="'+esc(c.name)+'" title="Editar">✎</button> <button class="iconbtn" data-delcat="'+esc(c.name)+'" title="Borrar">🗑</button></td></tr>';
+      });
+      h+='<tr class="grp-add"><td colspan="7"><button class="linkbtn" data-addcatgrp="'+esc(g)+'">＋ agregar categoría a '+esc(g)+'</button></td></tr>';
+    }
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+/* ===== Ingresos ===== */
+function viewIngresos(){
+  var people=state.settings.people;
+  var h='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:16px">';
+  people.forEach(function(p){
+    var rows=state.transactions.filter(function(r){return r.type==="ingreso"&&r.person===p&&inScope(r);});
+    var bySrc={};rows.forEach(function(r){bySrc[r.category]=(bySrc[r.category]||0)+csOf(r);});
+    var total=rows.reduce(function(a,r){return a+csOf(r);},0);
+    h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>'+esc(p)+'</b><span class="num" style="font-weight:700;color:'+C.green+'">'+fmtC(total)+'</span></div>';
+    var keys=Object.keys(bySrc).sort(function(a,b){return bySrc[b]-bySrc[a];});
+    h+=keys.length?keys.map(function(s){return '<div style="display:flex;justify-content:space-between;font-size:13px;padding:2px 0"><span class="muted">'+esc(s)+'</span><span class="num" style="font-weight:600">'+fmtC(bySrc[s])+'</span></div>';}).join(""):Empty("Sin ingresos en el período.");
+    h+='</div>';
+  });
+  h+='</div>';
+  var ms=monthsList();var data=ms.map(function(m){return {label:MABR[+m.slice(5,7)-1],value:state.transactions.filter(function(r){return r.type==="ingreso"&&mkey(r.date)===m;}).reduce(function(a,r){return a+csOf(r);},0)};});
+  h+='<div class="card"><b>Ingresos por mes</b><div style="margin-top:12px">'+svgBars(data,{color:C.green,height:200})+'</div></div>';
+  return h;
+}
+
+/* ===== modal infra ===== */
+function openModal(html,wide){document.getElementById("modalRoot").innerHTML='<div class="overlay" data-overlay><div class="modal'+(wide?" wide":"")+'">'+html+'</div></div>';}
+function closeModal(){document.getElementById("modalRoot").innerHTML="";}
+function groupDatalist(){return '<datalist id="dlGroups">'+groupsList().map(function(g){return '<option value="'+esc(g)+'">';}).join("")+'</datalist>';}
+
+/* ===== add movimiento ===== */
+var txType="gasto";
+var txPresetGroup=null;var txPresetCat=null;
+function openTx(presetGroup,presetCat){txType=(presetGroup==="Ingresos")?"ingreso":"gasto";txPresetGroup=presetGroup||null;txPresetCat=presetCat||null;openModal('<div class="mhead">Nuevo movimiento <button class="close" data-close>✕</button></div><div class="mbody" id="txBody"></div><div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-savetx>Guardar movimiento</button></div>');renderTxBody();}
+function txGroupOpts(){return txType==="ingreso"?["Ingresos"]:groupsList().filter(function(x){return x!=="Ingresos";});}
+function txCatOpts(g){return alpha(state.categories.filter(function(c){if(c.type!==txType||c.group!==g)return false;if(txType==="ingreso")return bud(c)>0;return true;}).map(function(c){return c.name;}));}
+function defaultTxDate(){
+  var now=new Date();var realY=now.getFullYear(),realM=now.getMonth()+1,realD=now.getDate();
+  var ty,tm;
+  if(ui.pMode==="year"&&ui.pMonths.length===1){ty=+ui.pYear;tm=ui.pMonths[0];}
+  else{var ly=latestYM();if(ly){ty=+ly.slice(0,4);tm=+ly.slice(5,7);}else{ty=realY;tm=realM;}}
+  var lastDay=new Date(ty,tm,0).getDate();
+  var day=(ty===realY&&tm===realM)?realD:Math.min(realD,lastDay);
+  return ty+"-"+(tm<10?"0":"")+tm+"-"+(day<10?"0":"")+day;
+}
+function renderTxBody(){
+  var s=state.settings;var today=defaultTxDate();
+  var gopts=txGroupOpts();var firstG=(txPresetGroup&&gopts.indexOf(txPresetGroup)>=0)?txPresetGroup:(gopts[0]||"");var copts=txCatOpts(firstG);
+  var firstC=(txPresetCat&&copts.indexOf(txPresetCat)>=0)?txPresetCat:(copts[0]||"");
+  document.getElementById("txBody").innerHTML=
+   '<div class="seg">'+["gasto","ingreso"].map(function(t){var on=t===txType;var bg=t==="ingreso"?C.green:C.coral;return '<button data-txtype="'+t+'" style="'+(on?"background:"+bg+";color:#fff":"")+'">'+(t==="gasto"?"Gasto":"Ingreso")+'</button>';}).join("")+'</div>'
+   +'<div class="r2"><div><label class="f">Fecha</label><input class="field" id="f_date" type="date" value="'+today+'"></div><div><label class="f">Persona</label><select class="field" id="f_person">'+alpha(s.people).map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div></div>'
+   +'<div class="r2"><div><label class="f">Grupo</label><select class="field" id="f_group">'+gopts.map(function(g){return '<option'+(g===firstG?" selected":"")+'>'+esc(g)+'</option>';}).join("")+'</select></div><div><label class="f">Categoría</label><select class="field" id="f_cat">'+copts.map(function(n){return '<option'+(n===firstC?" selected":"")+'>'+esc(n)+'</option>';}).join("")+'</select></div></div>'
+   +'<div id="f_budinfo"></div>'
+   +'<div><label class="f">Concepto</label><input class="field" id="f_concept" placeholder="Ej. Compra semanal"></div>'
+   +'<div class="r2"><div><label class="f">Moneda</label><select class="field" id="f_cur"><option value="COR">C$</option><option value="USD">US$</option></select></div><div><label class="f">Monto</label><input class="field num" id="f_amount" type="number" placeholder="0.00"></div></div>';
+  var gsel=document.getElementById("f_group");
+  var csel=document.getElementById("f_cat");
+  gsel.addEventListener("change",function(){var opts=txCatOpts(gsel.value);csel.innerHTML=opts.map(function(n){return '<option>'+esc(n)+'</option>';}).join("");renderTxBudInfo();});
+  csel.addEventListener("change",renderTxBudInfo);
+  renderTxBudInfo();
+}
+function renderTxBudInfo(){
+  var box=document.getElementById("f_budinfo");if(!box)return;
+  if(txType!=="gasto"){box.innerHTML="";return;}
+  var g=document.getElementById("f_group").value,catName=document.getElementById("f_cat").value;
+  var c=state.categories.filter(function(x){return x.type==="gasto"&&x.group===g&&x.name===catName;})[0];
+  if(!c||!bud(c)){box.innerHTML='<div class="muted" style="font-size:12px;margin:-6px 0 10px">Sin presupuesto asignado a esta categoría.</div>';return;}
+  var pBud=periodBudgetFor(c);var real=scopeAmt(spentCat(catName,true));var pct=pBud>0?real/pBud:0;var over=pct>1;var rem=pBud-real;
+  box.innerHTML='<div style="background:'+(over?C.coralSoft:C.tealSoft)+';border-radius:10px;padding:10px 12px;margin:-4px 0 12px;font-size:12.5px">'
+   +'<div style="display:flex;justify-content:space-between;margin-bottom:6px"><b>Presupuesto de '+esc(catName)+'</b><span class="num" style="font-weight:700">'+fmtC(pBud)+'</span></div>'
+   +bar(pct,over?C.coral:C.teal)
+   +'<div style="margin-top:6px;color:'+(over?C.coral:C.ink2)+';font-weight:500">'+(over?"⚠ Ya excediste el presupuesto en "+fmtC(real-pBud):"Gastado "+fmtC(real)+" · queda "+fmtC(rem))+' · '+monthLabel()+'</div></div>';
+}
+function saveTx(){var cat=document.getElementById("f_cat").value;var group=document.getElementById("f_group").value;var amount=parseFloat(document.getElementById("f_amount").value);if(!cat||!amount){alert("Elige categoría y monto.");return;}state.transactions.unshift({id:uid(),date:document.getElementById("f_date").value,person:document.getElementById("f_person").value,type:txType,category:cat,group:group,concept:document.getElementById("f_concept").value,merchant:"",account:"",method:"",currency:document.getElementById("f_cur").value,amount:amount});save();closeModal();render();}
+
+function openGroupDetail(g){
+  var txs=scopeTx().filter(function(r){return r.type==="gasto"&&r.group===g;});
+  var gNIO=txs.reduce(function(a,r){return a+amtNIO(r);},0),gUSD=txs.reduce(function(a,r){return a+amtUSD(r);},0);
+  var byCat={};txs.forEach(function(r){(byCat[r.category]=byCat[r.category]||[]).push(r);});
+  var catNames=Object.keys(byCat).sort(function(a,b){var ta=byCat[a].reduce(function(s,r){return s+amtNIO(r);},0),tb=byCat[b].reduce(function(s,r){return s+amtNIO(r);},0);return tb-ta;});
+  var h='<div class="mhead" style="align-items:start"><div>'+tag(g)+'<div class="num" style="font-size:20px;font-weight:700;margin-top:8px">'+esc(g)+'</div><div class="muted" style="font-size:12px;margin-top:2px">'+monthLabel()+' · '+txs.length+' mov.</div></div><button class="close" data-close>✕</button></div>';
+  h+='<div class="mbody" style="padding:0 0 8px">';
+  h+='<div style="padding:14px 22px;background:'+C.bg+';display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span class="muted" style="font-size:12px">Total del grupo</span><span class="num" style="font-weight:700">'+fmtNIO(gNIO)+' <span class="muted" style="font-weight:500">/ '+fmtUSD(gUSD)+'</span></span><button class="btn btn-teal" data-addtxgrp="'+esc(g)+'" style="padding:8px 14px;font-size:12.5px">＋ Agregar movimiento</button></div>';
+  if(!catNames.length){h+='<div style="padding:22px">'+Empty("Sin movimientos de este grupo en el período.")+'</div>';}
+  catNames.forEach(function(cn){
+    var rows=byCat[cn].slice().sort(function(a,b){return a.date<b.date?1:-1;});
+    var cNIO=rows.reduce(function(a,r){return a+amtNIO(r);},0),cUSD=rows.reduce(function(a,r){return a+amtUSD(r);},0);
+    h+='<div class="mv-chead"><span>'+esc(cn)+'</span><span class="muted" style="font-size:11.5px">'+rows.length+' mov.</span><span class="num" style="margin-left:auto;font-size:12.5px">'+fmtNIO(cNIO)+' <span class="muted">/ '+fmtUSD(cUSD)+'</span></span></div>';
+    h+='<div style="overflow-x:auto"><table><tbody>'+rows.map(function(r){return '<tr class="rowh mv-row" data-classify="'+r.id+'" style="cursor:pointer"><td class="muted" style="white-space:nowrap;padding-left:22px">'+esc(r.date)+'</td><td>'+esc(r.person)+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.concept)+'</td><td class="muted" style="white-space:nowrap">'+esc(r.method)+'</td><td class="num" style="text-align:right;font-weight:600;white-space:nowrap">'+fmtNIO(amtNIO(r))+'</td><td class="num" style="text-align:right;white-space:nowrap;color:'+C.ink2+'">'+fmtUSD(amtUSD(r))+'</td></tr>';}).join("")+'</tbody></table></div>';
+  });
+  h+='</div>';
+  openModal(h,true);
+}
+function openIncomeDetail(){
+  var pp=ui.pPerson||"Todos";
+  var txs=scopeTx().filter(function(r){return r.type==="ingreso";});
+  if(pp!=="Todos")txs=txs.filter(function(r){return r.person===pp;});
+  var gNIO=txs.reduce(function(a,r){return a+amtNIO(r);},0),gUSD=txs.reduce(function(a,r){return a+amtUSD(r);},0);
+  var byCat={};txs.forEach(function(r){(byCat[r.category]=byCat[r.category]||[]).push(r);});
+  var catNames=Object.keys(byCat).sort(function(a,b){var ta=byCat[a].reduce(function(s,r){return s+amtNIO(r);},0),tb=byCat[b].reduce(function(s,r){return s+amtNIO(r);},0);return tb-ta;});
+  var h='<div class="mhead" style="align-items:start"><div>'+tag("Ingresos")+'<div class="num" style="font-size:20px;font-weight:700;margin-top:8px">Ingresos'+(pp!=="Todos"?" · "+esc(pp):"")+'</div><div class="muted" style="font-size:12px;margin-top:2px">'+monthLabel()+' · '+txs.length+' mov.</div></div><button class="close" data-close>✕</button></div>';
+  h+='<div class="mbody" style="padding:0 0 8px">';
+  h+='<div style="padding:14px 22px;background:'+C.bg+';display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span class="muted" style="font-size:12px">Total de ingresos</span><span class="num" style="font-weight:700;color:'+C.green+'">'+fmtNIO(gNIO)+' <span class="muted" style="font-weight:500">/ '+fmtUSD(gUSD)+'</span></span><button class="btn btn-teal" data-addtxgrp="Ingresos" style="padding:8px 14px;font-size:12.5px">＋ Agregar movimiento</button></div>';
+  if(!catNames.length){h+='<div style="padding:22px">'+Empty("Sin ingresos registrados en el período.")+'</div>';}
+  catNames.forEach(function(cn){
+    var rows=byCat[cn].slice().sort(function(a,b){return a.date<b.date?1:-1;});
+    var cNIO=rows.reduce(function(a,r){return a+amtNIO(r);},0),cUSD=rows.reduce(function(a,r){return a+amtUSD(r);},0);
+    h+='<div class="mv-chead"><span>'+esc(cn)+'</span><span class="muted" style="font-size:11.5px">'+rows.length+' mov.</span><span class="num" style="margin-left:auto;font-size:12.5px">'+fmtNIO(cNIO)+' <span class="muted">/ '+fmtUSD(cUSD)+'</span></span></div>';
+    h+='<div style="overflow-x:auto"><table><tbody>'+rows.map(function(r){return '<tr class="rowh mv-row" data-classify="'+r.id+'" style="cursor:pointer"><td class="muted" style="white-space:nowrap;padding-left:22px">'+esc(r.date)+'</td><td>'+esc(r.person)+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(r.concept)+'</td><td class="muted" style="white-space:nowrap">'+esc(r.method)+'</td><td class="num" style="text-align:right;font-weight:600;white-space:nowrap;color:'+C.green+'">+'+fmtNIO(amtNIO(r))+'</td><td class="num" style="text-align:right;white-space:nowrap;color:'+C.ink2+'">+'+fmtUSD(amtUSD(r))+'</td></tr>';}).join("")+'</tbody></table></div>';
+  });
+  h+='</div>';
+  openModal(h,true);
+}
+/* ===== add / edit category ===== */
+function catForm(vals){vals=vals||{name:"",group:groupsList()[0]||"Otros",budgetR:"",budgetM:""};
+  var p0=state.settings.people[0]||"Persona 1",p1=state.settings.people[1]||"Persona 2";
+  return '<div class="mbody">'
+   +'<div><label class="f">Nombre</label><input class="field" id="c_name" value="'+esc(vals.name)+'" placeholder="Ej. Streaming, Uber…"></div>'
+   +'<div><label class="f">Grupo</label><input class="field" id="c_group" list="dlGroups" value="'+esc(vals.group)+'" placeholder="Elige o escribe uno nuevo">'+groupDatalist()+'</div>'
+   +'<div class="r2"><div><label class="f">Presupuesto '+esc(p0)+' ('+curSym()+') <button type="button" class="iconbtn" data-renameperson="0" title="Renombrar a '+esc(p0)+'" style="vertical-align:middle">✎</button></label><input class="field num" id="c_budR" type="number" value="'+esc(vals.budgetR)+'" placeholder="0"></div><div><label class="f">Presupuesto '+esc(p1)+' ('+curSym()+') <button type="button" class="iconbtn" data-renameperson="1" title="Renombrar a '+esc(p1)+'" style="vertical-align:middle">✎</button></label><input class="field num" id="c_budM" type="number" value="'+esc(vals.budgetM)+'" placeholder="0"></div></div></div>';
+}
+var lastCatModalOpener=null;
+function renamePerson(idx){
+  var people=state.settings.people;var oldName=people[idx];if(!oldName)return;
+  var nn=prompt("Nuevo nombre para \""+oldName+"\":",oldName);
+  if(nn===null)return;nn=nn.trim();if(!nn||nn===oldName)return;
+  if(people.indexOf(nn)>=0){alert("Ya hay una persona con ese nombre.");return;}
+  people[idx]=nn;
+  state.transactions.forEach(function(r){if(r.person===oldName)r.person=nn;});
+  state.categories.forEach(function(c){if(c.owner===oldName)c.owner=nn;});
+  save();
+  if(lastCatModalOpener)lastCatModalOpener();else render();
+}
+function openCat(g){lastCatModalOpener=function(){openCat(g);};var v=g?{name:"",group:g,owner:"Compartido",budget:""}:null;openModal('<div class="mhead">Nueva categoría <button class="close" data-close>✕</button></div>'+catForm(v)+'<div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ink" data-savecat>Crear categoría</button></div>');}
+function readCatForm(){var name=document.getElementById("c_name").value.trim();var group=document.getElementById("c_group").value.trim()||"Otros";var br=parseFloat(document.getElementById("c_budR").value)||0;var bm=parseFloat(document.getElementById("c_budM").value)||0;if(ui.cur==="NIO"){br=br/tc();bm=bm/tc();}return{name:name,group:group,budgetR:br,budgetM:bm};}
+function ensureGroup(g){if(!state.settings.groups)state.settings.groups=[];if(state.settings.groups.indexOf(g)<0)state.settings.groups.push(g);}
+function saveCat(){var v=readCatForm();if(!v.name){alert("Ponle nombre a la categoría.");return;}if(state.categories.some(function(c){return c.name===v.name;})){alert("Ya existe una categoría con ese nombre.");return;}ensureGroup(v.group);state.categories.push({name:v.name,group:v.group,type:"gasto",owner:"Compartido",budgetR:v.budgetR,budgetM:v.budgetM});save();closeModal();render();}
+function openEditCat(name){lastCatModalOpener=function(){openEditCat(name);};var c=state.categories.filter(function(x){return x.name===name;})[0];if(!c)return;var vals={name:c.name,group:c.group,budgetR:c.budgetR?String(Math.round(budR(c)*100)/100):"",budgetM:c.budgetM?String(Math.round(budM(c)*100)/100):""};openModal('<div class="mhead">Editar categoría <button class="close" data-close>✕</button></div>'+catForm(vals)+'<div class="mfoot"><button class="btn" data-delcat="'+esc(name)+'" style="background:none;border:1px solid '+C.coralSoft+';color:'+C.coral+'">Borrar</button><button class="btn btn-teal" data-saveeditcat="'+esc(name)+'">Guardar</button></div>');}
+function saveEditCat(oldName){var v=readCatForm();if(!v.name){alert("El nombre no puede estar vacío.");return;}if(v.name!==oldName&&state.categories.some(function(c){return c.name===v.name;})){alert("Ya existe otra categoría con ese nombre.");return;}ensureGroup(v.group);var c=state.categories.filter(function(x){return x.name===oldName;})[0];if(!c)return;c.name=v.name;c.group=v.group;c.budgetR=v.budgetR;c.budgetM=v.budgetM;if(v.name!==oldName){state.transactions.forEach(function(r){if(r.category===oldName){r.category=v.name;r.group=v.group;}});}else{state.transactions.forEach(function(r){if(r.category===oldName)r.group=v.group;});}save();closeModal();render();}
+function delCat(name){if(!confirm('¿Borrar la categoría "'+name+'"? Los movimientos no se borran.'))return;state.categories=state.categories.filter(function(c){return c.name!==name;});save();closeModal();render();}
+
+/* ===== add group ===== */
+function openGroup(){openModal('<div class="mhead">Nuevo grupo <button class="close" data-close>✕</button></div><div class="mbody"><div><label class="f">Nombre del grupo</label><input class="field" id="g_name" placeholder="Ej. Inversiones"></div><div class="muted" style="font-size:12px">Aparecerá disponible al crear o editar categorías.</div></div><div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-ink" data-savegroup>Crear grupo</button></div>');}
+function saveGroup(){var n=document.getElementById("g_name").value.trim();if(!n){alert("Escribe un nombre.");return;}ensureGroup(n);save();closeModal();render();}
+function delGroup(g){var cats=state.categories.filter(function(c){return c.type==="gasto"&&c.group===g;});if(cats.length){if(!confirm("El grupo \""+g+"\" tiene "+cats.length+" categoría(s). Se moverán a \"Otros\". ¿Continuar?"))return;ensureGroup("Otros");cats.forEach(function(c){c.group="Otros";});state.transactions.forEach(function(r){if(r.group===g)r.group="Otros";});}else{if(!confirm("¿Quitar el grupo \""+g+"\"?"))return;}state.settings.groups=(state.settings.groups||[]).filter(function(x){return x!==g;});save();render();}
+var GROUP_PALETTE=["#0E7C86","#2F9E6B","#E4572E","#6B7B9E","#B8823A","#C0567E","#8E6BB0","#3D8DB0","#2FA0A0","#9E6B4A","#D08A2E","#7BA05B","#5AAE9E","#4A6FB0","#B0503D","#8A97A0","#C98A16","#5A5FE0"];
+function openEditGroup(g){
+  var cur=colorOf(g);
+  var swatches=GROUP_PALETTE.map(function(c){return '<button class="swatch'+(c.toLowerCase()===cur.toLowerCase()?" on":"")+'" data-swatch="'+c+'" style="background:'+c+'"></button>';}).join("");
+  var h='<div class="mhead">Editar grupo <button class="close" data-close>✕</button></div>';
+  h+='<div class="mbody">';
+  h+='<div><label class="f">Nombre</label><input class="field" id="eg_name" value="'+esc(g)+'"></div>';
+  h+='<div><label class="f">Color</label><div class="swrow" id="eg_swrow">'+swatches+'</div><input type="color" id="eg_color" value="'+cur+'" style="margin-top:8px;width:60px;height:34px;border:1px solid '+C.line+';border-radius:8px;cursor:pointer;padding:2px"></div>';
+  h+='</div>';
+  h+='<div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-saveeditgrp="'+esc(g)+'">Guardar</button></div>';
+  openModal(h);
+  var colorInput=document.getElementById("eg_color");
+  document.getElementById("eg_swrow").addEventListener("click",function(e){
+    var b=e.target.closest("[data-swatch]");if(!b)return;
+    colorInput.value=b.getAttribute("data-swatch");
+    document.querySelectorAll("#eg_swrow .swatch").forEach(function(s){s.classList.toggle("on",s===b);});
+  });
+}
+function saveEditGroup(oldName){
+  var newName=document.getElementById("eg_name").value.trim();
+  var color=document.getElementById("eg_color").value;
+  if(!newName){alert("El nombre no puede estar vacío.");return;}
+  if(newName!==oldName&&groupsList().indexOf(newName)>=0){alert("Ya existe un grupo con ese nombre.");return;}
+  if(!state.settings.groupColors)state.settings.groupColors={};
+  if(newName!==oldName){
+    state.settings.groups=(state.settings.groups||[]).map(function(x){return x===oldName?newName:x;});
+    if(!state.settings.groups.length||state.settings.groups.indexOf(newName)<0)ensureGroup(newName);
+    state.categories.forEach(function(c){if(c.group===oldName)c.group=newName;});
+    state.transactions.forEach(function(r){if(r.group===oldName)r.group=newName;});
+    delete state.settings.groupColors[oldName];
+    if(ui.collapsed&&(oldName in ui.collapsed)){ui.collapsed[newName]=ui.collapsed[oldName];delete ui.collapsed[oldName];}
+    if(ui.movCollapsed&&(oldName in ui.movCollapsed)){ui.movCollapsed[newName]=ui.movCollapsed[oldName];delete ui.movCollapsed[oldName];}
+  }
+  state.settings.groupColors[newName]=color;
+  save();closeModal();render();
+}
+
+function incomeNames(){return alpha(state.categories.filter(function(c){return c.type==="ingreso";}).map(function(c){return c.name;}));}
+function openAddIncome(name){var c=name?state.categories.filter(function(x){return x.name===name;})[0]:null;var dl='<datalist id="dlInc">'+incomeNames().map(function(n){return '<option value="'+esc(n)+'">';}).join("")+'</datalist>';var p0=state.settings.people[0]||"Persona 1",p1=state.settings.people[1]||"Persona 2";openModal('<div class="mhead">'+(c?"Editar ingreso":"Agregar ingreso")+' <button class="close" data-close>✕</button></div><div class="mbody"><div><label class="f">Tipo de ingreso</label><input class="field" id="i_type" list="dlInc" value="'+(c?esc(c.name):"")+'" placeholder="Elige o escribe uno nuevo">'+dl+'</div><div class="r2"><div><label class="f">Presupuesto '+esc(p0)+' ('+curSym()+')</label><input class="field num" id="i_budR" type="number" value="'+(c&&c.budgetR?Math.round(budR(c)*100)/100:"")+'" placeholder="0"></div><div><label class="f">Presupuesto '+esc(p1)+' ('+curSym()+')</label><input class="field num" id="i_budM" type="number" value="'+(c&&c.budgetM?Math.round(budM(c)*100)/100:"")+'" placeholder="0"></div></div></div><div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-saveincome="'+(c?esc(name):"")+'">Guardar</button></div>');}
+function saveIncome(oldName){var name=document.getElementById("i_type").value.trim();var br=parseFloat(document.getElementById("i_budR").value)||0;var bm=parseFloat(document.getElementById("i_budM").value)||0;if(ui.cur==="NIO"){br=br/tc();bm=bm/tc();}if(!name){alert("Elige o escribe el tipo de ingreso.");return;}var ex=state.categories.filter(function(c){return c.name===name;})[0];if(ex){ex.type="ingreso";ex.group="Ingresos";ex.budgetR=br;ex.budgetM=bm;}else{state.categories.push({name:name,group:"Ingresos",type:"ingreso",budgetR:br,budgetM:bm});}if(oldName&&oldName!==name){state.transactions.forEach(function(r){if(r.category===oldName)r.category=name;});state.categories=state.categories.filter(function(c){return c.name!==oldName;});}save();closeModal();render();}
+/* ===== category detail ===== */
+function openCatDetail(name){
+  var cat=state.categories.filter(function(c){return c.name===name;})[0]||{name:name,group:"Otros",budget:0};
+  var hist=state.transactions.filter(function(r){return r.category===name&&r.type==="gasto";}).sort(function(a,b){return a.date<b.date?1:-1;});
+  var total=hist.reduce(function(a,r){return a+csOf(r);},0);var am={};hist.forEach(function(r){am[mkey(r.date)]=1;});var nm=Object.keys(am).length;var avg=nm?total/nm:0;
+  var thisM=scopeAmt(hist.filter(function(r){return periodMonthsArr().indexOf(mkey(r.date))>=0;}).reduce(function(a,r){return a+csOf(r);},0));
+  var pBud=periodBudgetFor(cat);var pct=pBud>0?thisM/pBud:0;var over=pct>1;
+  var ms=monthsList();var series=ms.map(function(m){return {label:MABR[+m.slice(5,7)-1],value:hist.filter(function(r){return mkey(r.date)===m;}).reduce(function(a,r){return a+csOf(r);},0)};});
+  var h='<div class="mhead" style="align-items:start"><div>'+tag(cat.group)+'<div class="num" style="font-size:22px;font-weight:700;margin-top:8px">'+esc(name)+'</div></div><button class="close" data-close>✕</button></div><div class="mbody">';
+  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">'+[["Total histórico",total],[monthLabel(),thisM],["Promedio / mes",avg]].map(function(k){return '<div style="background:'+C.bg+';border-radius:12px;padding:14px"><div style="font-size:11.5px;color:'+C.ink2+';font-weight:600">'+k[0]+'</div><div class="num" style="font-size:18px;font-weight:700;margin-top:5px">'+fmtC(k[1])+'</div></div>';}).join("")+'</div>';
+  h+='<div><b style="font-size:13px">Tendencia mensual</b><div style="margin-top:8px">'+svgBars(series,{color:colorOf(cat.group),budget:bud(cat)||0,height:180})+'</div></div>';
+  h+='<div><b style="font-size:13px">Historial · '+hist.length+' movimientos</b><div style="margin-top:6px">'+(hist.length?hist.map(function(r){return '<div class="rowh mv-row" data-classify="'+r.id+'" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:9px 6px"><div style="min-width:0"><div style="font-size:13px;font-weight:600">'+esc(r.concept||r.merchant)+'</div><div class="muted" style="font-size:11.5px">'+esc(r.date)+' · '+esc(r.person)+' · '+esc(r.method)+'</div></div><span class="num" style="font-weight:600">'+fmtC(csOf(r))+'</span></div>';}).join(""):Empty("Sin movimientos todavía."))+'</div></div>';
+  h+='<div style="display:flex;gap:8px"><button class="btn btn-teal" data-addtxgrp="'+esc(cat.group)+'" data-addtxcat="'+esc(name)+'">＋ Agregar movimiento</button><button class="btn btn-ghost" data-editcatbtn="'+esc(name)+'">✎ Editar</button><button class="btn" data-delcat="'+esc(name)+'" style="background:none;border:1px solid '+C.coralSoft+';color:'+C.coral+'">🗑 Borrar</button></div>';
+  h+='</div>';openModal(h);
+}
+
+
+/* ===== importar estado de cuenta ===== */
+function ipad(n){return (n<10?"0":"")+n;}
+function parseImpNum(s){s=String(s).replace(/[^0-9.,\-]/g,"").trim();if(!s||s==="-")return NaN;var lc=s.lastIndexOf(","),ld=s.lastIndexOf(".");if(lc>-1&&ld>-1){if(lc>ld)s=s.replace(/\./g,"").replace(",",".");else s=s.replace(/,/g,"");}else if(lc>-1){if(/,\d{2}$/.test(s))s=s.replace(/\./g,"").replace(",",".");else s=s.replace(/,/g,"");}else s=s.replace(/,/g,"");return parseFloat(s);}
+function parseImpDate(s){s=String(s).trim();var m;if(m=s.match(/(\d{4})-(\d{2})-(\d{2})/))return m[1]+"-"+m[2]+"-"+m[3];if(m=s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/)){var d=+m[1],mo=+m[2],y=+m[3];if(y<100)y+=2000;if(mo>12&&d<=12){var t=d;d=mo;mo=t;}return y+"-"+ipad(mo)+"-"+ipad(d);}var mon={ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,set:9,oct:10,nov:11,dic:12,jan:1,apr:4,aug:8,dec:12};if(m=s.match(/(\d{1,2})[\/\-\s]([a-zA-Z]{3})[a-zA-Z]*[\/\-\s]*(\d{2,4})?/)){var mm=mon[m[2].toLowerCase()];if(mm){var yy=m[3]?+m[3]:(new Date().getFullYear());if(yy<100)yy+=2000;return yy+"-"+ipad(mm)+"-"+ipad(+m[1]);}}return null;}
+function splitCells(line,delim){var out=[],cur="",q=false;for(var i=0;i<line.length;i++){var ch=line[i];if(ch==='"'){q=!q;}else if(ch===delim&&!q){out.push(cur);cur="";}else cur+=ch;}out.push(cur);return out.map(function(x){return x.trim().replace(/^"|"$/g,"");});}
+function parseStatement(text,def){
+  var lines=text.split(/\r?\n/).map(function(l){return l.trim();}).filter(function(l){return l.length;});
+  if(!lines.length)return [];
+  var rows=[];
+  // CSV detection: mask thousands-separator commas (e.g. 2,200.00) so they aren't
+  // mistaken for a delimiter, then require a CONSISTENT field count (>=2) across most lines
+  function maskThousands(l){return l.replace(/(\d),(\d{3})(?=\D|$)/g,function(m,a,b){return a+b;});}
+  var delims=[",",";","\t","|"];var best=null,bestScore=-1;
+  delims.forEach(function(d){
+    var sampleLines=lines.slice(0,10).map(function(l){return d===","?maskThousands(l):l;});
+    var counts=sampleLines.map(function(l){return splitCells(l,d).length;});
+    var freq={};counts.forEach(function(c){freq[c]=(freq[c]||0)+1;});
+    var modeCount=0,modeVal=1;
+    Object.keys(freq).forEach(function(k){if(freq[k]>modeCount){modeCount=freq[k];modeVal=+k;}});
+    var consistency=modeCount/counts.length;
+    var score=(modeVal>=2&&consistency>=0.7)?consistency*modeVal:-1;
+    if(score>bestScore){bestScore=score;best=d;}
+  });
+  var isCSV=bestScore>0&&best;
+  if(isCSV){
+    var table=lines.map(function(l){return splitCells(best===","?maskThousands(l):l,best);});
+    var ncol=Math.max.apply(null,table.map(function(r){return r.length;}));
+    // detect header
+    var hdrIdx=-1;
+    for(var i=0;i<Math.min(3,table.length);i++){var joined=table[i].join(" ").toLowerCase();if(/fecha|date|descrip|concepto|detalle|monto|importe|valor|cargo|debito|débito|credito|crédito|amount/.test(joined)){hdrIdx=i;break;}}
+    var hdr=hdrIdx>=0?table[hdrIdx].map(function(x){return x.toLowerCase();}):null;
+    var dataRows=table.slice(hdrIdx>=0?hdrIdx+1:0);
+    var colDate=-1,colDesc=-1,colAmt=-1,colDebit=-1,colCredit=-1;
+    if(hdr){hdr.forEach(function(h,i){if(colDate<0&&/fecha|date/.test(h))colDate=i;if(colDesc<0&&/descrip|concepto|detalle|referencia|comercio|transacc/.test(h))colDesc=i;if(/cargo|debito|débito|retiro|compra/.test(h))colDebit=i;if(/abono|credito|crédito|deposito|depósito|pago/.test(h))colCredit=i;if(colAmt<0&&/monto|importe|valor|amount/.test(h))colAmt=i;});}
+    // infer missing columns from data
+    function looksDate(v){return !!parseImpDate(v);}
+    function looksNum(v){return !isNaN(parseImpNum(v))&&/\d/.test(v);}
+    if(colDate<0){for(var c=0;c<ncol;c++){var hits=0;dataRows.slice(0,10).forEach(function(r){if(r[c]&&looksDate(r[c]))hits++;});if(hits>=Math.min(3,dataRows.length)){colDate=c;break;}}}
+    if(colAmt<0&&colDebit<0&&colCredit<0){var numc=[];for(var c2=0;c2<ncol;c2++){var nh=0;dataRows.slice(0,10).forEach(function(r){if(r[c2]&&looksNum(r[c2]))nh++;});if(nh>=Math.min(3,dataRows.length))numc.push(c2);}if(numc.length)colAmt=numc[numc.length-1];}
+    if(colDesc<0){var bestLen=-1;for(var c3=0;c3<ncol;c3++){if(c3===colDate||c3===colAmt)continue;var tot=0,cnt=0;dataRows.slice(0,10).forEach(function(r){if(r[c3]){tot+=r[c3].length;cnt++;}});var avg=cnt?tot/cnt:0;if(avg>bestLen&&!looksNum(dataRows[0]&&dataRows[0][c3]||"")){bestLen=avg;colDesc=c3;}}}
+    var cardPaymentReCsv=/pago recib|su pago|pago aplicado|gracias por su pago|pago efectuado|bonificacion pago saldo/i;
+    dataRows.forEach(function(r){
+      if(colDate<0||!r[colDate])return;var date=parseImpDate(r[colDate]);if(!date)return;
+      var amount=NaN,type="gasto";
+      if(colDebit>=0||colCredit>=0){var deb=colDebit>=0?parseImpNum(r[colDebit]||""):NaN;var cre=colCredit>=0?parseImpNum(r[colCredit]||""):NaN;if(!isNaN(cre)&&cre>0){amount=cre;type="ingreso";}else if(!isNaN(deb)&&deb>0){amount=deb;type="gasto";}}
+      else if(colAmt>=0){var raw=parseImpNum(r[colAmt]||"");if(!isNaN(raw)){amount=Math.abs(raw);type=raw<0?"gasto":"gasto";}}
+      if(isNaN(amount)||!amount)return;
+      var concept=colDesc>=0?(r[colDesc]||""):"";
+      if(cardPaymentReCsv.test(concept))return;
+      rows.push({date:date,concept:concept,amount:amount,type:type});
+    });
+  } else {
+    // freeform (pasted PDF text): find lines with a date and a trailing amount.
+    // Statements often have two trailing number columns (e.g. Local/Dólares) where
+    // the last one is 0.00 — scan backward for the last NON-ZERO amount instead of
+    // blindly taking the very last token. Skip boilerplate summary lines (payment
+    // due dates, cut-off dates, etc.) that look like transactions but aren't.
+    var boilerplateRe=/pago m[ií]nimo|pago contado|fecha de corte|fecha l[ií]mite|producto\s*:|nombre\s*:|saldo al corte|previous balance|disponible|puntos\s|intereses corrientes/i;
+    var cardPaymentRe=/pago recib|su pago|pago aplicado|gracias por su pago|pago efectuado|bonificacion pago saldo/i;
+    lines.forEach(function(l){
+      if(boilerplateRe.test(l))return;
+      if(cardPaymentRe.test(l))return;
+      var date=parseImpDate(l);if(!date)return;
+      var amts=l.match(/-?[0-9][0-9.,]*[0-9]/g);if(!amts||!amts.length)return;
+      var amount=null;
+      for(var ai=amts.length-1;ai>=0;ai--){
+        var cand=parseImpNum(amts[ai]);
+        if(!isNaN(cand)&&cand!==0){amount=cand;break;}
+      }
+      if(amount===null)return;
+      var concept=l.replace(/\S*\d{1,4}[\/\-]\d{1,2}[\/\-]?\d{0,4}\S*/,"");
+      concept=concept.replace(/(\s*-?[0-9][0-9.,]*[0-9]){1,3}\s*$/,"");
+      concept=concept.replace(/\s+/g," ").trim();
+      rows.push({date:date,concept:concept||l.slice(0,40),amount:Math.abs(amount),type:amount<0?"ingreso":"gasto"});
+    });
+  }
+  // currency hint + defaults + dedup
+  return rows.map(function(r){
+    var cur=def.cur;var low=r.concept.toLowerCase();
+    if(/us\$|usd|d[oó]lar/.test(low))cur="USD";if(/c\$|c[oó]rdoba|nio/.test(low))cur="COR";
+    var dup=state.transactions.some(function(t){return t.date===r.date&&Math.abs(Math.abs(t.currency==="USD"?t.amount:t.amount)-r.amount)<0.5&&(t.concept||"").slice(0,10).toLowerCase()===r.concept.slice(0,10).toLowerCase();});
+    return {date:r.date,concept:r.concept,amount:r.amount,currency:cur,person:def.person,type:r.type,dup:dup};
+  });
+}
+function openImport(){
+  var s=state.settings;
+  var h='<div class="mhead">Importar estado de cuenta <button class="close" data-close>✕</button></div>';
+  h+='<div class="mbody">';
+  h+='<div class="muted" style="font-size:12.5px">Sube un archivo <b>CSV</b> exportado del banco, o pega el texto del estado de cuenta (PDF). Detecto fecha, concepto y monto; los movimientos entran como <b>pendientes de clasificar</b>.</div>';
+  h+='<div class="r2"><div><label class="f">Persona por defecto</label><select class="field" id="imp_person">'+alpha(s.people).map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div><div><label class="f">Moneda por defecto</label><select class="field" id="imp_cur"><option value="COR">C$</option><option value="USD">US$</option></select></div></div>';
+  h+='<div><label class="f">Archivo (CSV o PDF)</label><input class="field" id="imp_file" type="file" accept=".csv,.txt,.pdf"></div>';
+  h+='<div><label class="f">…o pega el texto aquí</label><textarea class="field" id="imp_text" rows="5" placeholder="Pega aquí las líneas del estado de cuenta"></textarea></div>';
+  h+='<div style="text-align:right"><button class="btn btn-ink" data-impparse>Analizar</button></div>';
+  h+='<div id="imp_preview"></div>';
+  h+='</div>';
+  openModal(h,true);
+  document.getElementById("imp_file").addEventListener("change",handleImportFile);
+}
+function handleImportFile(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;
+  var name=(f.name||"").toLowerCase();
+  if(name.slice(-4)===".pdf"){
+    var st=document.getElementById("imp_text");st.value="Leyendo PDF…";
+    loadPdfJs().then(function(pdfjsLib){
+      var rd=new FileReader();
+      rd.onload=function(){pdfjsLib.getDocument({data:new Uint8Array(rd.result)}).promise.then(function(pdf){
+        var pages=[];for(var i=1;i<=pdf.numPages;i++)pages.push(i);
+        return Promise.all(pages.map(function(n){return pdf.getPage(n).then(function(pg){return pg.getTextContent().then(function(tc){
+          var items=tc.items.slice().sort(function(a,b){var ya=a.transform[5],yb=b.transform[5];if(Math.abs(ya-yb)>3)return yb-ya;return a.transform[4]-b.transform[4];});
+          var out="",lastY=null;items.forEach(function(it){var y=it.transform[5];if(lastY!==null&&Math.abs(y-lastY)>3)out+="\n";out+=it.str+" ";lastY=y;});return out;
+        });});})).then(function(txts){document.getElementById("imp_text").value=txts.join("\n");});
+      });};
+      rd.readAsArrayBuffer(f);
+    }).catch(function(){document.getElementById("imp_text").value="";alert("No pude leer el PDF automáticamente (posiblemente sin conexión). Abre el PDF, copia el texto y pégalo en el recuadro.");});
+  } else {
+    var rd=new FileReader();rd.onload=function(){document.getElementById("imp_text").value=rd.result;};rd.readAsText(f,"utf-8");
+  }
+}
+function loadPdfJs(){return new Promise(function(res,rej){if(window.pdfjsLib){res(window.pdfjsLib);return;}var sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=function(){try{window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";res(window.pdfjsLib);}catch(e){rej(e);}};sc.onerror=rej;document.head.appendChild(sc);});}
+var IMP_STOPWORDS={NI:1,CB:1,APP:1,SUC:1,LOCAL:1,LOCALES:1,TARJETA:1,ATM:1,RET:1,RETIRO:1,PAGO:1,PAGOS:1,COMPRA:1,COMPRAS:1,VENTA:1,POS:1,REF:1,REFERENCIA:1,TRANSFERENCIA:1,DEBITO:1,CREDITO:1,MONEDA:1,USD:1,COR:1,DOLARES:1,CORDOBAS:1,DEL:1,LOS:1,LAS:1,UNA:1,POR:1,CON:1,PARA:1,QUE:1,SUS:1,GRACIAS:1,RECIBIDO:1,MANAGUA:1,GRANADA:1};
+function impWords(s){return String(s||"").toUpperCase().replace(/[^A-ZÁÉÍÓÚÑ0-9\s]/g," ").split(/\s+/).filter(function(w){return w.length>=3&&!IMP_STOPWORDS[w]&&!/^\d+$/.test(w);});}
+function buildMerchantIndex(){
+  var idx={};
+  state.transactions.forEach(function(t){
+    if(t.type!=="gasto"||isPending(t))return;
+    var words=impWords(t.concept||t.merchant||"");
+    var key=t.group+"\u0001"+t.category;
+    words.forEach(function(w){if(!idx[w])idx[w]={};idx[w][key]=(idx[w][key]||0)+1;});
+  });
+  return idx;
+}
+function guessFromHistory(concept,idx){
+  var words=impWords(concept);var scores={};
+  words.forEach(function(w){if(!idx[w])return;Object.keys(idx[w]).forEach(function(k){scores[k]=(scores[k]||0)+idx[w][k];});});
+  var best=null,bestScore=0;
+  Object.keys(scores).forEach(function(k){if(scores[k]>bestScore){bestScore=scores[k];best=k;}});
+  if(!best)return null;
+  var parts=best.split("\u0001");
+  return {group:parts[0],category:parts[1]};
+}
+function parseImport(){
+  var text=document.getElementById("imp_text").value||"";
+  var def={person:document.getElementById("imp_person").value,cur:document.getElementById("imp_cur").value};
+  var rows=parseStatement(text,def);
+  var midx=buildMerchantIndex();
+  rows.forEach(function(r){
+    if(r.type==="ingreso"){r.group="Ingresos";r.category="Otros Ingresos";r.guessed=false;return;}
+    var g=guessFromHistory(r.concept,midx);
+    if(g){r.group=g.group;r.category=g.category;r.guessed=true;}
+    else{r.group="Otros";r.category="Por clasificar";r.guessed=false;}
+  });
+  ui._imp=rows;
+  var box=document.getElementById("imp_preview");
+  if(!rows.length){box.innerHTML='<div class="muted" style="padding:14px 0">No detecté movimientos. Verifica el formato o pega el texto con fecha y monto por línea.</div>';return;}
+  var newN=rows.filter(function(r){return !r.dup;}).length;
+  var guessedN=rows.filter(function(r){return r.guessed;}).length;
+  var h='<div style="margin:10px 0 6px;font-weight:700;font-size:13px">'+rows.length+' detectados · '+newN+' nuevos'+(rows.length-newN?' · '+(rows.length-newN)+' posibles duplicados':'')+(guessedN?' · <span style="color:'+C.green+'">'+guessedN+' clasificados automáticamente por historial</span>':'')+'</div>';
+  h+='<div style="overflow-x:auto;max-height:320px;overflow-y:auto"><table class="imptbl"><thead><tr><th></th><th>Fecha</th><th>Concepto</th><th>Persona</th><th class="rt">Monto</th><th>Mon.</th><th>Tipo</th><th>Grupo</th><th>Categoría</th></tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    var gopts=(r.type==="ingreso"?["Ingresos"]:groupsList().filter(function(x){return x!=="Ingresos";}));
+    var copts=state.categories.filter(function(c){return c.type===r.type&&c.group===r.group;}).map(function(c){return c.name;});
+    if(copts.indexOf(r.category)<0)copts=[r.category].concat(copts);copts=alpha(copts);
+    var gsel='<select class="imp-in" data-impf="group" data-impi="'+i+'" style="'+(r.guessed?"border-color:"+C.green+";color:"+C.green+";font-weight:600":"")+'">'+gopts.map(function(g){return '<option'+(g===r.group?" selected":"")+'>'+esc(g)+'</option>';}).join("")+'</select>';
+    var csel='<select class="imp-in" data-impf="category" data-impi="'+i+'" style="'+(r.guessed?"border-color:"+C.green+";color:"+C.green+";font-weight:600":"")+'">'+copts.map(function(c){return '<option'+(c===r.category?" selected":"")+'>'+esc(c)+'</option>';}).join("")+'</select>';
+    h+='<tr'+(r.dup?' style="opacity:.5"':'')+'><td><input type="checkbox" data-impchk="'+i+'"'+(r.dup?"":" checked")+'></td>'
+     +'<td><input class="imp-in" data-impf="date" data-impi="'+i+'" value="'+esc(r.date)+'" style="width:105px"></td>'
+     +'<td><input class="imp-in" data-impf="concept" data-impi="'+i+'" value="'+esc(r.concept)+'" style="min-width:180px"></td>'
+     +'<td><select class="imp-in" data-impf="person" data-impi="'+i+'">'+alpha(state.settings.people).map(function(p){return '<option'+(p===r.person?" selected":"")+'>'+esc(p)+'</option>';}).join("")+'</select></td>'
+     +'<td class="rt"><input class="imp-in num rt" data-impf="amount" data-impi="'+i+'" value="'+r.amount+'" style="width:90px"></td>'
+     +'<td><select class="imp-in" data-impf="currency" data-impi="'+i+'"><option value="COR"'+(r.currency==="COR"?" selected":"")+'>C$</option><option value="USD"'+(r.currency==="USD"?" selected":"")+'>US$</option></select></td>'
+     +'<td><select class="imp-in" data-impf="type" data-impi="'+i+'"><option value="gasto"'+(r.type==="gasto"?" selected":"")+'>Gasto</option><option value="ingreso"'+(r.type==="ingreso"?" selected":"")+'>Ingreso</option></select></td>'
+     +'<td style="min-width:130px">'+gsel+'</td><td style="min-width:150px">'+csel+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div class="mfoot" style="padding:14px 0 0"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-impcommit>Importar seleccionados</button></div>';
+  box.innerHTML=h;
+}
+function commitImport(){
+  var rows=ui._imp||[];var added=0;
+  document.querySelectorAll("[data-impchk]").forEach(function(chk){
+    if(!chk.checked)return;var i=+chk.getAttribute("data-impchk");var r=rows[i];if(!r)return;
+    function gv(f){var el=document.querySelector('[data-impf="'+f+'"][data-impi="'+i+'"]');return el?el.value:"";}
+    var type=gv("type")||r.type;var amount=parseFloat(gv("amount"))||r.amount;
+    var group=gv("group")||r.group||(type==="ingreso"?"Ingresos":"Otros");
+    var category=gv("category")||r.category||(type==="ingreso"?"Otros Ingresos":"Por clasificar");
+    state.transactions.unshift({id:uid(),date:gv("date")||r.date,person:gv("person")||r.person,type:type,category:category,group:group,concept:gv("concept")||r.concept,merchant:"",account:"",method:"Importado",currency:gv("currency")||r.currency,amount:amount});
+    added++;
+  });
+  save();closeModal();ui.view="movimientos";render();
+  setTimeout(function(){alert(added+" movimiento(s) importado(s). Los que reconocí por historial ya tienen grupo y categoría; el resto está pendiente de clasificar.");},50);
+}
+
+/* ===== listeners ===== */
+document.addEventListener("click",function(e){var t=e.target,el;
+  if((el=t.closest("[data-view]"))){ui.view=el.dataset.view;ui.q="";render();return;}
+  if((el=t.closest("[data-view-link]"))){ui.view=el.dataset.viewLink;render();return;}
+  if(t.closest("[data-action='add-tx']")){openTx();return;}
+  if(t.closest("[data-action='import']")){openImport();return;}
+  if(t.closest("[data-impparse]")){parseImport();return;}
+  if(t.closest("[data-impcommit]")){commitImport();return;}
+  if((el=t.closest("[data-addtxgrp]"))){openTx(el.getAttribute("data-addtxgrp"),el.getAttribute("data-addtxcat"));return;}
+  if(t.closest("[data-action='add-cat']")){openCat();return;}
+  if(t.closest("[data-action='add-group']")){openGroup();return;}
+  if(t.closest("[data-action='add-income']")){openAddIncome();return;}
+  if((el=t.closest("[data-saveincome]"))){saveIncome(el.getAttribute("data-saveincome"));return;}
+  if((el=t.closest("[data-addcatgrp]"))){openCat(el.getAttribute("data-addcatgrp"));return;}
+  if((el=t.closest("[data-delgroup]"))){delGroup(el.getAttribute("data-delgroup"));return;}
+  if((el=t.closest("[data-editgrp]"))){openEditGroup(el.getAttribute("data-editgrp"));return;}
+  if((el=t.closest("[data-saveeditgrp]"))){saveEditGroup(el.getAttribute("data-saveeditgrp"));return;}
+  if((el=t.closest("[data-gcol]"))){var gg=el.getAttribute("data-gcol");ui.collapsed[gg]=!ui.collapsed[gg];render();return;}
+  if((el=t.closest("[data-movgcol]"))){var mg=el.getAttribute("data-movgcol");ui.movCollapsed[mg]=!ui.movCollapsed[mg];render();return;}
+  if((el=t.closest("[data-del]"))){var id=el.dataset.del;if(confirm("¿Eliminar este movimiento? Esta acción no se puede deshacer.")){state.transactions=state.transactions.filter(function(r){return r.id!==id;});save();render();}return;}
+  if((el=t.closest("[data-classify]"))){openClassify(el.getAttribute("data-classify"));return;}
+  if((el=t.closest("[data-saveclassify]"))){saveClassify(el.getAttribute("data-saveclassify"));return;}
+  if(t.closest("[data-action='clearfilters']")){ui.colFilters={};ui.sort=null;render();return;}
+  if(t.closest("[data-action='reset']")){if(confirm("¿Restaurar los datos de ejemplo? Se perderán tus cambios.")){state=JSON.parse(JSON.stringify(SEED));save();ui._pInit=false;render();}return;}
+  if(t.closest("[data-action='clear-tx']")){
+    var n=state.transactions.length;
+    if(!n){alert("No hay movimientos que borrar.");return;}
+    if(confirm("¿Borrar los "+n+" movimientos registrados? Esta acción no se puede deshacer.\n\nEl presupuesto (grupos, categorías y montos) se mantiene igual.")){
+      if(confirm("Confirma una vez más: se eliminarán TODOS los movimientos, empezando de cero.")){
+        state.transactions=[];save();ui._pInit=false;ui.view="movimientos";render();
+      }
+    }
+    return;
+  }
+  if((el=t.closest("[data-cur]"))){ui.cur=el.dataset.cur;render();return;}
+  if((el=t.closest("[data-dashsort]"))){var dk=el.getAttribute("data-dashsort");if(ui.dashSort&&ui.dashSort.key===dk){ui.dashSort.dir=ui.dashSort.dir==="desc"?"asc":"desc";}else{ui.dashSort={key:dk,dir:"desc"};}render();return;}
+  if((el=t.closest("[data-pyear]"))){ui.pMode="year";ui.pYear=el.getAttribute("data-pyear");ui.pMonths=[];render();return;}
+  if((el=t.closest("[data-pytd]"))){var yy=el.getAttribute("data-pytd");var lm=+latestYM().slice(5,7);var arr=[];for(var i=1;i<=lm;i++)arr.push(i);ui.pMode="year";ui.pYear=yy;ui.pMonths=arr;render();return;}
+  if((el=t.closest("[data-pall]"))){ui.pMode="all";render();return;}
+  if((el=t.closest("[data-pmonth]"))){var mnum=+el.getAttribute("data-pmonth");ui.pMode="year";ui.pMonths=[mnum];render();return;}
+  if(t.closest("[data-pallmonths]")){ui.pMonths=[];render();return;}
+  if(t.closest("[data-pavg]")){ui.pAvg=!ui.pAvg;render();return;}
+  if((el=t.closest("[data-pperson]"))){ui.pPerson=el.getAttribute("data-pperson");render();return;}
+
+  if((el=t.closest("[data-colmenu]"))){var _th=el.closest("th");openColMenu(el.getAttribute("data-colmenu"),_th.getBoundingClientRect());return;}
+  if((el=t.closest("[data-sort]"))){if(POPCOL)ui.sort={col:POPCOL,dir:el.getAttribute("data-sort")};closePop();render();return;}
+  if(t.closest("[data-clearcol]")){if(POPCOL)ui.colFilters[POPCOL]=null;closePop();render();return;}
+  if(t.closest("[data-popclose]")){closePop();return;}
+  if((el=t.closest("[data-exp]"))){var k=el.getAttribute("data-exp");ui.expand[k]=!ui.expand[k];render();return;}
+  if((el=t.closest("[data-editcatbtn]"))){openEditCat(el.getAttribute("data-editcatbtn"));return;}
+  if((el=t.closest("[data-renameperson]"))){renamePerson(+el.getAttribute("data-renameperson"));return;}
+  if((el=t.closest("[data-delcat]"))){delCat(el.getAttribute("data-delcat"));return;}
+  if((el=t.closest("[data-dashgexp]"))){var dg=el.getAttribute("data-dashgexp");ui.dashExpand[dg]=!ui.dashExpand[dg];render();return;}
+  if((el=t.closest("[data-kpiclick]"))){var kc=el.getAttribute("data-kpiclick");if(kc==="income")openIncomeDetail();return;}
+  if((el=t.closest("[data-quickaddg]"))){openTx(el.getAttribute("data-quickaddg"),el.getAttribute("data-quickaddc"));return;}
+  if((el=t.closest("[data-cat]"))){openCatDetail(el.dataset.cat);return;}
+  if((el=t.closest("[data-groupdetail]"))){openGroupDetail(el.getAttribute("data-groupdetail"));return;}
+  if((el=t.closest("[data-txtype]"))){txType=el.getAttribute("data-txtype");renderTxBody();return;}
+  if(t.closest("[data-savetx]")){saveTx();return;}
+  if(t.closest("[data-savecat]")){saveCat();return;}
+  if(t.closest("[data-savegroup]")){saveGroup();return;}
+  if((el=t.closest("[data-saveeditcat]"))){saveEditCat(el.getAttribute("data-saveeditcat"));return;}
+  if((el=t.closest("[data-savebudget]"))){var nm=el.getAttribute("data-savebudget");var val=parseFloat(document.getElementById("d_budget").value)||0;if(ui.cur==="NIO")val=val/tc();state.categories.forEach(function(c){if(c.name===nm)c.budget=val;});save();closeModal();render();return;}
+  if(t.closest("[data-close]")||t.hasAttribute("data-overlay")){closeModal();return;}
+});
+document.addEventListener("change",function(e){var t=e.target;
+  if(t.hasAttribute&&t.hasAttribute("data-impf")&&t.getAttribute("data-impf")==="group"){
+    var i=t.getAttribute("data-impi");var r=(ui._imp||[])[+i];if(!r)return;
+    r.group=t.value;t.style.borderColor="";t.style.color="";t.style.fontWeight="";
+    var copts=state.categories.filter(function(c){return c.type===r.type&&c.group===r.group;}).map(function(c){return c.name;});
+    if(!copts.length)copts=["Por clasificar"];copts=alpha(copts);
+    r.category=copts[0];
+    var csel=document.querySelector('[data-impf="category"][data-impi="'+i+'"]');
+    if(csel){csel.innerHTML=copts.map(function(c){return '<option>'+esc(c)+'</option>';}).join("");csel.style.borderColor="";csel.style.color="";csel.style.fontWeight="";}
+    return;
+  }
+  if(t.hasAttribute&&t.hasAttribute("data-impf")&&t.getAttribute("data-impf")==="category"){
+    var i2=t.getAttribute("data-impi");var r2=(ui._imp||[])[+i2];if(r2){r2.category=t.value;}
+    t.style.borderColor="";t.style.color="";t.style.fontWeight="";
+    return;
+  }
+  if(t.hasAttribute&&(t.hasAttribute("data-colcheck")||t.hasAttribute("data-selectall"))){var boxes=Array.prototype.slice.call(document.querySelectorAll("[data-colcheck]"));if(t.hasAttribute("data-selectall")){boxes.forEach(function(b){b.checked=t.checked;});}var checked=boxes.filter(function(b){return b.checked;}).map(function(b){return b.getAttribute("data-colcheck");});var sa=document.querySelector("[data-selectall]");if(sa)sa.checked=(checked.length===boxes.length);ui.colFilters[POPCOL]=(checked.length===boxes.length)?null:checked;render();return;}
+  if(t.hasAttribute&&t.hasAttribute("data-editgroup")){var id=t.getAttribute("data-editgroup"),g=t.value;state.transactions.forEach(function(r){if(r.id===id){r.group=g;var cats=state.categories.filter(function(c){return c.type===r.type&&c.group===g;}).map(function(c){return c.name;});if(cats.indexOf(r.category)<0)r.category=cats.length?cats[0]:r.category;}});save();render();return;}
+  if(t.hasAttribute&&t.hasAttribute("data-editcat")){var id2=t.getAttribute("data-editcat"),cat=t.value;var m=state.categories.filter(function(c){return c.name===cat;})[0];state.transactions.forEach(function(r){if(r.id===id2){r.category=cat;if(m)r.group=m.group;}});save();render();return;}
+  if(t.hasAttribute&&t.hasAttribute("data-editbudgetr")){var cnr=t.getAttribute("data-editbudgetr");var br=parseFloat(t.value)||0;if(ui.cur==="NIO")br=br/tc();state.categories.forEach(function(c){if(c.name===cnr)c.budgetR=br;});save();render();return;}
+  if(t.hasAttribute&&t.hasAttribute("data-editbudgetm")){var cnm=t.getAttribute("data-editbudgetm");var bm=parseFloat(t.value)||0;if(ui.cur==="NIO")bm=bm/tc();state.categories.forEach(function(c){if(c.name===cnm)c.budgetM=bm;});save();render();return;}
+  if(t.hasAttribute&&t.hasAttribute("data-editincbudgetr")){var inr=t.getAttribute("data-editincbudgetr");var ibr=parseFloat(t.value)||0;if(ui.cur==="NIO")ibr=ibr/tc();state.categories.forEach(function(c){if(c.name===inr)c.budgetR=ibr;});save();render();return;}
+  if(t.hasAttribute&&t.hasAttribute("data-editincbudgetm")){var inm=t.getAttribute("data-editincbudgetm");var ibm=parseFloat(t.value)||0;if(ui.cur==="NIO")ibm=ibm/tc();state.categories.forEach(function(c){if(c.name===inm)c.budgetM=ibm;});save();render();return;}
+});
+document.addEventListener("input",function(e){
+  if(e.target.hasAttribute&&e.target.hasAttribute("data-colsearch")){var q=e.target.value.toLowerCase();Array.prototype.slice.call(document.querySelectorAll(".pop-list .pop-item")).forEach(function(it){it.style.display=it.textContent.toLowerCase().indexOf(q)>=0?"":"none";});return;}
+  if(e.target.id==="searchBox"){ui.q=e.target.value;render();var nb=document.getElementById("searchBox");if(nb){nb.focus();nb.value=ui.q;nb.setSelectionRange(ui.q.length,ui.q.length);}}
+});
+
+/* ===== drag-to-reorder groups ===== */
+var dragG=null;
+function reorderGroups(from,to){var arr=groupOrder().filter(function(g){return g!=="Ingresos";});var fi=arr.indexOf(from),ti=arr.indexOf(to);if(fi<0||ti<0||fi===ti)return;arr.splice(fi,1);arr.splice(ti,0,from);state.settings.groups=arr;save();render();}
+document.addEventListener("dragstart",function(e){var el=e.target.closest("[data-drag-group]");if(!el)return;dragG=el.getAttribute("data-drag-group");el.classList.add("dragging");if(e.dataTransfer){e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",dragG);}catch(x){}}});
+document.addEventListener("dragend",function(e){var el=e.target.closest("[data-drag-group]");if(el)el.classList.remove("dragging");document.querySelectorAll(".grp-h.drag-over").forEach(function(x){x.classList.remove("drag-over");});dragG=null;});
+document.addEventListener("dragover",function(e){var el=e.target.closest("[data-drag-group]");if(!el||!dragG)return;e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect="move";document.querySelectorAll(".grp-h.drag-over").forEach(function(x){if(x!==el)x.classList.remove("drag-over");});el.classList.add("drag-over");});
+document.addEventListener("drop",function(e){var el=e.target.closest("[data-drag-group]");if(!el||!dragG)return;e.preventDefault();var to=el.getAttribute("data-drag-group");el.classList.remove("drag-over");if(to!==dragG)reorderGroups(dragG,to);dragG=null;});
+
+(function(){
+  try{ firebase.initializeApp(firebaseConfig); }catch(e){}
+  _auth=firebase.auth(); _db=firebase.firestore();
+  _docref=_db.collection("presupuesto").doc("hogar");
+  var gate=document.getElementById("authGate"), appRoot=document.getElementById("appRoot");
+  var btn=document.getElementById("authBtn"), msg=document.getElementById("authMsg");
+  var emailI=document.getElementById("authEmail"), passI=document.getElementById("authPass");
+  function authErr(e){var c=(e&&e.code)||"";
+    if(c.indexOf("wrong-password")>=0||c.indexOf("invalid-credential")>=0)return "Correo o contrase\u00f1a incorrectos.";
+    if(c.indexOf("user-not-found")>=0)return "Ese correo no est\u00e1 registrado.";
+    if(c.indexOf("invalid-email")>=0)return "El correo no es v\u00e1lido.";
+    if(c.indexOf("too-many-requests")>=0)return "Demasiados intentos, espera un momento.";
+    if(c.indexOf("network")>=0)return "Sin conexi\u00f3n a internet.";
+    return "No se pudo entrar. ("+c+")";}
+  function doLogin(){msg.textContent="";var em=(emailI.value||"").trim(),pw=passI.value||"";
+    if(!em||!pw){msg.textContent="Escribe correo y contrase\u00f1a.";return;}
+    btn.disabled=true;btn.textContent="Entrando\u2026";
+    _auth.signInWithEmailAndPassword(em,pw).catch(function(e){msg.textContent=authErr(e);}).finally(function(){btn.disabled=false;btn.textContent="Entrar";});}
+  btn.addEventListener("click",doLogin);
+  passI.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+  emailI.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+  document.addEventListener("click",function(e){var l=e.target.closest&&e.target.closest('[data-action=\"logout\"]');if(l){e.preventDefault();if(_unsub){_unsub();_unsub=null;}_booted=false;if(_auth)_auth.signOut();}});
+  function attachCloud(){
+    _unsub=_docref.onSnapshot(function(snap){
+      if(snap.exists&&snap.data()&&snap.data().state){state=snap.data().state;migrate();render();}
+      else{state=load();migrate();cloudSave();render();}
+    },function(err){console.error("sync",err);state=load();migrate();render();});
+  }
+  _auth.onAuthStateChanged(function(user){
+    if(user){gate.style.display="none";appRoot.style.display="flex";if(!_booted){_booted=true;attachCloud();}}
+    else{appRoot.style.display="none";gate.style.display="grid";passI.value="";}
+  });
+})();
+</script>
+</body>
+</html>
