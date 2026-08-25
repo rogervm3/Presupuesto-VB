@@ -562,7 +562,7 @@ function openClassify(id){
   h+='<div><label class="f">Concepto</label><input class="field" id="cl_concept" value="'+esc(r.concept||"")+'"></div>';
   h+='<div class="r2"><div><label class="f">Grupo</label><select class="field" id="cl_group">'+gopts+'</select></div><div><label class="f">Categoría</label><select class="field" id="cl_cat">'+copts+'</select></div></div>';
   h+='<div class="r2"><div><label class="f">Moneda</label><select class="field" id="cl_cur"><option value="COR"'+(r.currency==="COR"?" selected":"")+'>C$</option><option value="USD"'+(r.currency==="USD"?" selected":"")+'>US$</option></select></div><div><label class="f">Monto</label><input class="field num" id="cl_amount" type="number" value="'+r.amount+'"></div></div>';
-  h+='</div><div class="mfoot"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-saveclassify="'+id+'">Guardar</button></div>';
+  h+='</div><div class="mfoot" style="justify-content:space-between"><button class="btn" data-deltx="'+id+'" style="background:none;border:1px solid '+C.coralSoft+';color:'+C.coral+'">\uD83D\uDDD1 Eliminar</button><div style="display:flex;gap:10px"><button class="btn btn-ghost" data-close>Cancelar</button><button class="btn btn-teal" data-saveclassify="'+id+'">Guardar</button></div></div>';
   openModal(h);
   var gsel=document.getElementById("cl_group");
   gsel.addEventListener("change",function(){
@@ -1040,6 +1040,7 @@ document.addEventListener("click",function(e){var t=e.target,el;
   if((el=t.closest("[data-saveeditgrp]"))){saveEditGroup(el.getAttribute("data-saveeditgrp"));return;}
   if((el=t.closest("[data-gcol]"))){var gg=el.getAttribute("data-gcol");ui.collapsed[gg]=!ui.collapsed[gg];render();return;}
   if((el=t.closest("[data-movgcol]"))){var mg=el.getAttribute("data-movgcol");ui.movCollapsed[mg]=!ui.movCollapsed[mg];render();return;}
+  if((el=t.closest("[data-deltx]"))){var idd=el.getAttribute("data-deltx");if(confirm("\u00bfEliminar este movimiento? Esta acci\u00f3n no se puede deshacer.")){state.transactions=state.transactions.filter(function(r){return r.id!==idd;});save();closeModal();render();}return;}
   if((el=t.closest("[data-del]"))){var id=el.dataset.del;if(confirm("¿Eliminar este movimiento? Esta acción no se puede deshacer.")){state.transactions=state.transactions.filter(function(r){return r.id!==id;});save();render();}return;}
   if((el=t.closest("[data-classify]"))){openClassify(el.getAttribute("data-classify"));return;}
   if((el=t.closest("[data-saveclassify]"))){saveClassify(el.getAttribute("data-saveclassify"));return;}
