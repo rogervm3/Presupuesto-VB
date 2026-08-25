@@ -232,6 +232,7 @@ var MABR=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic
 var C={teal:"#0E7C86",green:"#2F9E6B",coral:"#E4572E",amber:"#C98A16",ink:"#16323F",ink2:"#4A5560",muted:"#8A97A0",line:"#DCE3E7",bg:"#EEF1F3",tealSoft:"#E3F1F2",coralSoft:"#FBE7DF",greenSoft:"#E4F3EC"};
 var LSKEY="presupuesto_rm_v1";
 function OWNERS(){return state.settings.people.concat(["Compartido"]);}
+function currentPerson(){var em=((_auth&&_auth.currentUser&&_auth.currentUser.email)||"").toLowerCase();if(!em)return null;var ppl=state.settings.people||[];for(var i=0;i<ppl.length;i++){var f=String(ppl[i]).toLowerCase().split(/\s+/)[0].normalize("NFD").replace(/[\u0300-\u036f]/g,"");if(f&&em.indexOf(f)>=0)return ppl[i];}return null;}
 
 /* ===== state ===== */
 var SEED=JSON.parse(document.getElementById("seed").textContent);
@@ -672,12 +673,12 @@ function defaultTxDate(){
   return ty+"-"+(tm<10?"0":"")+tm+"-"+(day<10?"0":"")+day;
 }
 function renderTxBody(){
-  var s=state.settings;var today=defaultTxDate();
+  var s=state.settings;var today=defaultTxDate();var _defP=currentPerson();
   var gopts=txGroupOpts();var firstG=(txPresetGroup&&gopts.indexOf(txPresetGroup)>=0)?txPresetGroup:(gopts[0]||"");var copts=txCatOpts(firstG);
   var firstC=(txPresetCat&&copts.indexOf(txPresetCat)>=0)?txPresetCat:(copts[0]||"");
   document.getElementById("txBody").innerHTML=
    '<div class="seg">'+["gasto","ingreso"].map(function(t){var on=t===txType;var bg=t==="ingreso"?C.green:C.coral;return '<button data-txtype="'+t+'" style="'+(on?"background:"+bg+";color:#fff":"")+'">'+(t==="gasto"?"Gasto":"Ingreso")+'</button>';}).join("")+'</div>'
-   +'<div class="r2"><div><label class="f">Fecha</label><input class="field" id="f_date" type="date" value="'+today+'"></div><div><label class="f">Persona</label><select class="field" id="f_person">'+alpha(s.people).map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div></div>'
+   +'<div class="r2"><div><label class="f">Fecha</label><input class="field" id="f_date" type="date" value="'+today+'"></div><div><label class="f">Persona</label><select class="field" id="f_person">'+alpha(s.people).map(function(p){return '<option'+(p===_defP?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</select></div></div>'
    +'<div class="r2"><div><label class="f">Grupo</label><select class="field" id="f_group">'+gopts.map(function(g){return '<option'+(g===firstG?" selected":"")+'>'+esc(g)+'</option>';}).join("")+'</select></div><div><label class="f">Categoría</label><select class="field" id="f_cat">'+copts.map(function(n){return '<option'+(n===firstC?" selected":"")+'>'+esc(n)+'</option>';}).join("")+'</select></div></div>'
    +'<div id="f_budinfo"></div>'
    +'<div><label class="f">Concepto</label><input class="field" id="f_concept" placeholder="Ej. Compra semanal"></div>'
